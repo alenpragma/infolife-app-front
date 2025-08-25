@@ -1,0 +1,27 @@
+{
+  "name": "EDULIFE IT Institute",
+  "short_name": "EDULIFE",
+  "description": "Educational Progressive Web App for EDULIFE IT Institute",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#2563eb",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "/edulife-logo.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/edulife-logo.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["education", "productivity"],
+  "lang": "bn",
+  "dir": "ltr"
+}
