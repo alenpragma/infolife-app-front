@@ -32,7 +32,7 @@ export default function DashboardPage() {
       </div>
 
       <div className="p-3 sm:p-4 relative z-10">
-        <Card className="p-4 sm:p-6 bg-white/95 backdrop-blur-sm shadow-xl rounded-2xl border-0 transform  transition-all duration-300">
+        <Card className="p-4 sm:p-6 bg-white/95 backdrop-blur-sm shadow-md rounded-2xl border-0 transform  transition-all duration-300">
           <div className="flex items-center space-x-3 sm:space-x-4">
             <div className="w-16 h-16 sm:w-20 sm:h-20 bg-gradient-to-br from-purple-400 to-purple-600 rounded-full flex items-center justify-center shadow-lg flex-shrink-0">
               <span className="text-white font-bold text-xl sm:text-2xl">
@@ -55,8 +55,8 @@ export default function DashboardPage() {
       </div>
 
       <div className="p-3 sm:p-4 grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 relative z-10">
-        <Link href="/quiz">
-          <Card className="p-6 sm:p-8 bg-white/95 backdrop-blur-sm shadow-xl hover:shadow-2xl transition-all duration-300 cursor-pointer rounded-2xl border-0 transform   hover:-translate-y-1">
+        <Link href="/user/quiz">
+          <Card className="p-6 sm:p-8 bg-white/95 backdrop-blur-sm shadow-md hover:shadow-xl transition-all duration-300 cursor-pointer rounded-2xl border-0 transform ">
             <div className="text-center">
               <div className="w-14 h-14 sm:w-16 sm:h-16 bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl flex items-center justify-center mx-auto mb-3 sm:mb-4 shadow-lg">
                 <FileText className="w-7 h-7 sm:w-8 sm:h-8 text-white" />
@@ -68,8 +68,8 @@ export default function DashboardPage() {
           </Card>
         </Link>
 
-        <Link href="/todays-collection">
-          <Card className="p-6 sm:p-8 bg-white/95 backdrop-blur-sm shadow-xl hover:shadow-2xl transition-all duration-300 cursor-pointer rounded-2xl border-0 transform   hover:-translate-y-1">
+        <Link href="/user/todays-collection">
+          <Card className="p-6 sm:p-8 bg-white/95 backdrop-blur-sm shadow-md hover:shadow-xl transition-all duration-300 cursor-pointer rounded-2xl border-0 transform ">
             <div className="text-center">
               <div className="w-14 h-14 sm:w-16 sm:h-16 bg-gradient-to-br from-green-500 to-green-600 rounded-2xl flex items-center justify-center mx-auto mb-3 sm:mb-4 shadow-lg">
                 <Calendar className="w-7 h-7 sm:w-8 sm:h-8 text-white" />
@@ -81,8 +81,8 @@ export default function DashboardPage() {
           </Card>
         </Link>
 
-        <Link href="/all-forms">
-          <Card className="p-6 sm:p-8 bg-white/95 backdrop-blur-sm shadow-xl hover:shadow-2xl transition-all duration-300 cursor-pointer rounded-2xl border-0 transform   hover:-translate-y-1">
+        <Link href="/user/all-forms">
+          <Card className="p-6 sm:p-8 bg-white/95 backdrop-blur-sm shadow-md hover:shadow-xl transition-all duration-300 cursor-pointer rounded-2xl border-0 transform ">
             <div className="text-center">
               <div className="w-14 h-14 sm:w-16 sm:h-16 bg-gradient-to-br from-purple-500 to-purple-600 rounded-2xl flex items-center justify-center mx-auto mb-3 sm:mb-4 shadow-lg">
                 <List className="w-7 h-7 sm:w-8 sm:h-8 text-white" />
@@ -94,7 +94,7 @@ export default function DashboardPage() {
           </Card>
         </Link>
 
-        <Card className="p-6 sm:p-8 bg-white/95 backdrop-blur-sm shadow-xl hover:shadow-2xl transition-all duration-300 cursor-pointer rounded-2xl border-0 transform   hover:-translate-y-1">
+        <Card className="p-6 sm:p-8 bg-white/95 backdrop-blur-sm shadow-md hover:shadow-xl transition-all duration-300 cursor-pointer rounded-2xl border-0 transform ">
           <div className="text-center">
             <div className="w-14 h-14 sm:w-16 sm:h-16 bg-gradient-to-br from-orange-500 to-orange-600 rounded-2xl flex items-center justify-center mx-auto mb-3 sm:mb-4 shadow-lg">
               <BookOpen className="w-7 h-7 sm:w-8 sm:h-8 text-white" />
@@ -113,7 +113,7 @@ export default function DashboardPage() {
             <span className="text-xs sm:text-sm font-medium">হোম</span>
           </button>
           <Link
-            href="/test"
+            href="/user/test"
             prefetch={true} // 👈 সাথে সাথে preload হবে
             className="p-3 sm:p-4 text-center hover:bg-blue-500 transition-colors duration-200"
           >
@@ -122,7 +122,7 @@ export default function DashboardPage() {
           </Link>
 
           {/* <Link
-            href="/quiz"
+            href="/user/quiz"
             className="p-3 sm:p-4 text-center hover:bg-blue-500 transition-colors duration-200"
           >
             <Plus className="w-5 h-5 sm:w-6 sm:h-6 mx-auto mb-1" />

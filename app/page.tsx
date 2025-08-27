@@ -42,9 +42,14 @@ const page = () => {
     },
     onSuccess: (data: LoginResponse) => {
       Cookies.set("infolife", data.data.token);
+      console.log(data?.data?.user.role, "data");
 
       showSuccessAlert(data.message);
-      router.push("/dashboard");
+      if (data?.data?.user?.role == "USER") {
+        router.push("/user");
+      } else {
+        router.push("/admin");
+      }
     },
     onError: (err: AxiosError<{ message: string }>) => {
       showErrorAlert(err?.message || "Login failed.");

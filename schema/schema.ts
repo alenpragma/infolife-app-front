@@ -9,3 +9,23 @@ export function useBuySchema(minAmount: any) {
     note: z.string().optional(),
   });
 }
+
+
+
+
+export const userSchema = z.object({
+  id: z.string().uuid().optional(), // optional for create
+  name: z.string().min(2, "Name must be at least 2 characters").max(100),
+  email: z.string().email("Invalid email address"),
+  phone: z
+    .string()
+    .optional(),
+  password: z
+    .string()
+    .min(6, "Password must be at least 6 characters")
+    .optional(), // optional for update
+  isActive: z.boolean().default(false),
+  createdAt: z.date().optional(),
+  updatedAt: z.date().optional(),
+});
+
