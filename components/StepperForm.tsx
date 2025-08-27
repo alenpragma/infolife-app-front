@@ -11,21 +11,56 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import axiosInstance from "@/lib/axiosConfig/axiosConfig";
 import { useEffect, useRef, useState } from "react";
+import { useFormContext, useWatch } from "react-hook-form";
 import { toast } from "sonner";
 import { z, ZodType } from "zod";
+import { showErrorAlert } from "./toast/ToastSuccess";
 
 type FieldOption = { value: string; text: string };
 type Field = {
+  id: string;
   name: string;
   label: string;
   type: "TEXT" | "TEXTAREA" | "RADIO" | "CHECKBOX" | "CHECKBOX_GROUP" | "DATE";
   required?: boolean;
   placeholder?: string;
   options?: FieldOption[];
-  step: number; // API থেকে আসবে
+  step: number;
+  dependsOnQuestionId?: string | null;
+  dependsOnValue?: string | null;
 };
 
 type StepConfig = { step: number; title: string };
+
+// Component to watch form values for conditional rendering
+const FormWatcher = ({
+  renderField,
+  fields,
+  step,
+  onValuesChange,
+}: {
+  renderField: (field: Field, values: any) => any | null;
+  fields: Field[];
+  step: number;
+  onValuesChange: (values: any) => void;
+}) => {
+  const { control } = useFormContext();
+  const watchedValues = useWatch({ control });
+
+  useEffect(() => {
+    onValuesChange(watchedValues);
+  }, [watchedValues, onValuesChange]);
+
+  return (
+    <div className="space-y-4">
+      {fields
+        .filter((f) => f.step === step)
+        .map((f) => (
+          <div key={f.name}>{renderField(f, watchedValues)}</div>
+        ))}
+    </div>
+  );
+};
 
 export const StepperForm = () => {
   const formRef = useRef<GenericFormRef<any>>(null);
@@ -35,15 +70,18 @@ export const StepperForm = () => {
   const [loading, setLoading] = useState(false);
   const [step, setStep] = useState(1);
   const [stepsConfig, setStepsConfig] = useState<StepConfig[]>([]);
+  const [currentValues, setCurrentValues] = useState<any>({});
 
   useEffect(() => {
     async function fetchFields() {
       try {
+        setLoading(true);
         const resp = await axiosInstance.get("/qus");
         const apiFields: Field[] = resp.data.data.map((q: any) => ({
-          name: q.id, // unique identifier
+          id: q.id,
+          name: q.id,
           label: q.text,
-          type: q.type, // TEXT -> text, RADIO -> radio
+          type: q.type,
           required: q.required,
           placeholder: q.placeholder ?? "",
           options: q.options?.map((o: any) => ({
@@ -51,75 +89,210 @@ export const StepperForm = () => {
             text: o.text,
           })),
           step: q.step,
+          dependsOnQuestionId: q.dependsOnQuestionId,
+          dependsOnValue: q.dependsOnValue,
         }));
 
         setFields(apiFields);
 
-        // Auto-generate steps dynamically
         const steps = Array.from(new Set(apiFields.map((f) => f.step))).sort(
           (a, b) => a - b
         );
         setStepsConfig(steps.map((s) => ({ step: s, title: `Step ${s}` })));
 
-        // Generate Zod schema and initial values dynamically
-        const shape: Record<string, any> = {};
+        // Create initial values for all fields
         const initValues: Record<string, any> = {};
-
         apiFields.forEach((f) => {
           switch (f.type) {
             case "TEXT":
             case "TEXTAREA":
-              shape[f.name] = f.required
-                ? z.string().min(1, `${f.label} is required`)
-                : z.string().optional();
               initValues[f.name] = "";
               break;
             case "RADIO":
-              shape[f.name] = f.required
-                ? z.enum(
-                    f.options!.map((o) => o.value) as [string, ...string[]],
-                    { errorMap: () => ({ message: `${f.label} is required` }) }
-                  )
-                : z
-                    .enum(
-                      f.options!.map((o) => o.value) as [string, ...string[]]
-                    )
-                    .optional();
               initValues[f.name] = "";
               break;
             case "CHECKBOX":
-              shape[f.name] = f.required
-                ? z
-                    .boolean()
-                    .refine((v) => v, { message: `${f.label} is required` })
-                : z.boolean().optional();
               initValues[f.name] = false;
               break;
             case "CHECKBOX_GROUP":
-              shape[f.name] = z.array(z.string()).optional();
               initValues[f.name] = [];
               break;
             case "DATE":
-              shape[f.name] = f.required
-                ? z.coerce.date({ message: `${f.label} is required` })
-                : z.coerce.date().optional();
-              initValues[f.name] = new Date();
+              initValues[f.name] = null;
               break;
           }
         });
 
-        setSchema(z.object(shape));
         setInitialValues(initValues);
+        setCurrentValues(initValues); // Initialize currentValues with initialValues
       } catch (error) {
         console.error(error);
         toast.error("Failed to load form fields");
+      } finally {
+        setLoading(false);
       }
     }
-
     fetchFields();
   }, []);
 
-  const renderField = (field: Field) => {
+  // Check if a field should be visible based on dependencies
+  const isFieldVisible = (field: Field, values: any): boolean => {
+    if (!field.dependsOnQuestionId || !field.dependsOnValue) {
+      return true;
+    }
+
+    const parentValue = values[field.dependsOnQuestionId];
+    return parentValue === field.dependsOnValue;
+  };
+
+  // Check if a field should be required based on visibility and required flag
+  const isFieldRequired = (field: Field, values: any): boolean => {
+    if (!isFieldVisible(field, values)) return false;
+    return !!field.required;
+  };
+
+  // Create initial validation schema (without dependency checks)
+  const createInitialSchema = (fields: Field[]): ZodType<any> => {
+    const shape: Record<string, any> = {};
+
+    fields.forEach((f) => {
+      // For initial schema, only check if field is required (ignore dependencies)
+      if (f.required) {
+        switch (f.type) {
+          case "TEXT":
+          case "TEXTAREA":
+            shape[f.name] = z.string().min(1, `${f.label} is required`);
+            break;
+          case "RADIO":
+            shape[f.name] = z.enum(
+              f.options!.map((o) => o.value) as [string, ...string[]],
+              { errorMap: () => ({ message: `${f.label} is required` }) }
+            );
+            break;
+          case "CHECKBOX":
+            shape[f.name] = z
+              .boolean()
+              .refine((v) => v, { message: `${f.label} is required` });
+            break;
+          case "CHECKBOX_GROUP":
+            shape[f.name] = z
+              .array(z.string())
+              .min(1, `${f.label} requires at least one selection`);
+            break;
+          case "DATE":
+            shape[f.name] = z.coerce.date({
+              message: `${f.label} is required`,
+            });
+            break;
+        }
+      } else {
+        switch (f.type) {
+          case "TEXT":
+          case "TEXTAREA":
+            shape[f.name] = z.string().optional();
+            break;
+          case "RADIO":
+            shape[f.name] = z
+              .enum(f.options!.map((o) => o.value) as [string, ...string[]])
+              .optional()
+              .or(z.literal(""));
+            break;
+          case "CHECKBOX":
+            shape[f.name] = z.boolean().optional();
+            break;
+          case "CHECKBOX_GROUP":
+            shape[f.name] = z.array(z.string()).optional();
+            break;
+          case "DATE":
+            shape[f.name] = z.coerce.date().optional().or(z.literal(null));
+            break;
+        }
+      }
+    });
+
+    return z.object(shape);
+  };
+
+  // Update schema whenever current values change
+  useEffect(() => {
+    if (fields.length === 0) return;
+
+    // If we don't have current values yet, use initial schema
+    if (Object.keys(currentValues).length === 0) {
+      const initialSchema = createInitialSchema(fields);
+      setSchema(initialSchema);
+      return;
+    }
+
+    const shape: Record<string, any> = {};
+
+    fields.forEach((f) => {
+      // Check if field should be visible and required
+      const shouldBeRequired = isFieldRequired(f, currentValues);
+
+      if (shouldBeRequired) {
+        // Field is visible and required - add validation
+        switch (f.type) {
+          case "TEXT":
+          case "TEXTAREA":
+            shape[f.name] = z.string().min(1, `${f.label} is required`);
+            break;
+          case "RADIO":
+            shape[f.name] = z.enum(
+              f.options!.map((o) => o.value) as [string, ...string[]],
+              { errorMap: () => ({ message: `${f.label} is required` }) }
+            );
+            break;
+          case "CHECKBOX":
+            shape[f.name] = z
+              .boolean()
+              .refine((v) => v, { message: `${f.label} is required` });
+            break;
+          case "CHECKBOX_GROUP":
+            shape[f.name] = z
+              .array(z.string())
+              .min(1, `${f.label} requires at least one selection`);
+            break;
+          case "DATE":
+            shape[f.name] = z.coerce.date({
+              message: `${f.label} is required`,
+            });
+            break;
+        }
+      } else {
+        // Field is not required or not visible - make optional
+        switch (f.type) {
+          case "TEXT":
+          case "TEXTAREA":
+            shape[f.name] = z.string().optional();
+            break;
+          case "RADIO":
+            shape[f.name] = z
+              .enum(f.options!.map((o) => o.value) as [string, ...string[]])
+              .optional()
+              .or(z.literal(""));
+            break;
+          case "CHECKBOX":
+            shape[f.name] = z.boolean().optional();
+            break;
+          case "CHECKBOX_GROUP":
+            shape[f.name] = z.array(z.string()).optional();
+            break;
+          case "DATE":
+            shape[f.name] = z.coerce.date().optional().or(z.literal(null));
+            break;
+        }
+      }
+    });
+
+    setSchema(z.object(shape));
+  }, [fields, currentValues]);
+
+  const renderField = (field: Field, values: any) => {
+    if (!isFieldVisible(field, values)) return null;
+
+    const isRequired = isFieldRequired(field, values);
+
     switch (field.type) {
       case "TEXT":
         return (
@@ -127,7 +300,7 @@ export const StepperForm = () => {
             name={field.name}
             label={field.label}
             placeholder={field.placeholder}
-            required={field.required}
+            required={isRequired}
           />
         );
       case "TEXTAREA":
@@ -137,6 +310,7 @@ export const StepperForm = () => {
             label={field.label}
             placeholder={field.placeholder}
             autoResize
+            required={isRequired}
           />
         );
       case "RADIO":
@@ -144,7 +318,7 @@ export const StepperForm = () => {
           <RadioGroupField
             name={field.name}
             options={field.options!}
-            required={field.required}
+            required={isRequired}
           />
         );
       case "CHECKBOX":
@@ -152,7 +326,7 @@ export const StepperForm = () => {
           <CheckboxField
             name={field.name}
             label={field.label}
-            required={field.required}
+            required={isRequired}
           />
         );
       case "CHECKBOX_GROUP":
@@ -161,6 +335,7 @@ export const StepperForm = () => {
             name={field.name}
             label={field.label}
             options={field.options!}
+            required={isRequired}
           />
         );
       case "DATE":
@@ -168,7 +343,7 @@ export const StepperForm = () => {
           <DateField
             name={field.name}
             label={field.label}
-            required={field.required}
+            required={isRequired}
           />
         );
       default:
@@ -176,48 +351,100 @@ export const StepperForm = () => {
     }
   };
 
-  const handleNext = () => {
-    const values = formRef.current?.getValues();
-    // if (!values) return;
+  const validateCurrentStep = async (): Promise<boolean> => {
+    if (!formRef.current) return false;
 
-    // const parsed = schema.safeParse(values);
-    // if (!parsed.success) {
-    //   const formatted = parsed.error.format() as unknown as Record<
-    //     string,
-    //     { _errors: string[] }
-    //   >;
-    //   const stepErrors = fields.filter(
-    //     (f) => f.step === step && formatted[f.name]?._errors?.length > 0
-    //   );
-    //   if (stepErrors.length > 0) {
-    //     toast.error(
-    //       `Please fill all required fields in step ${step}: ${stepErrors
-    //         .map((f) => f.label)
-    //         .join(", ")}`
-    //     );
-    //     return;
-    //   }
-    // }
+    try {
+      // Get current form values
+      const values = formRef.current.form.getValues();
+      setCurrentValues(values);
 
-    setStep(step + 1);
+      // Trigger validation for all required visible fields in current step
+      const currentStepFields = fields.filter((f) => f.step === step);
+      const fieldNamesToValidate = currentStepFields
+        .filter((f) => isFieldRequired(f, formRef.current!.form.getValues()))
+        .map((f) => f.name);
+
+      if (fieldNamesToValidate.length === 0) return true;
+
+      // Wait for trigger result
+      const result = await formRef.current.form.trigger(fieldNamesToValidate);
+
+      return result;
+    } catch (error) {
+      console.error("Validation error:", error);
+      return false;
+    }
+  };
+
+  const handleNext = async () => {
+    const isValid = await validateCurrentStep();
+    if (isValid) {
+      setStep(step + 1);
+    } else {
+      showErrorAlert("Please fill all required fields correctly");
+    }
   };
 
   const handleBack = () => setStep(step - 1);
 
-  if (fields.length === 0) return <p>Loading form...</p>;
+  const handleSubmit = async (values: any) => {
+    setLoading(true);
+    formRef.current.form.reset(); // <-- form clear here
+    try {
+      // Filter out hidden field values before submission
+      const submissionData: any = {};
+
+      Object.keys(values).forEach((key) => {
+        const field = fields.find((f) => f.name === key);
+        if (field && isFieldVisible(field, values)) {
+          submissionData[key] = values[key];
+        }
+      });
+
+      alert(JSON.stringify(submissionData));
+      // Your submission logic here
+      console.log("Form submitted:", submissionData);
+      toast.success("Form submitted successfully!");
+    } catch (error) {
+      console.error("Submission error:", error);
+      toast.error("Failed to submit form");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleValuesChange = (values: any) => {
+    setCurrentValues(values);
+  };
+
+  if (loading && fields.length === 0) return <p>Loading form...</p>;
 
   return (
     <Card className="bg-white shadow-xl rounded-2xl p-6 my-6 max-w-2xl mx-auto border">
       {/* Step indicators */}
-      <div className="flex justify-between mb-6">
-        {stepsConfig.map((s) => (
-          <div
-            key={s.step}
-            className={`flex-1 text-center text-sm font-medium ${
-              s.step === step ? "text-blue-600" : "text-gray-400"
-            }`}
-          >
-            {s.title}
+      <div className="flex justify-between mb-6 relative">
+        <div className="absolute top-1/2 left-0 right-0 h-1 bg-gray-200 -translate-y-1/2 -z-10"></div>
+        {stepsConfig.map((s, index) => (
+          <div key={s.step} className="flex flex-col items-center relative">
+            <div
+              className={`w-8 h-8 rounded-full flex items-center justify-center border-2 ${
+                s.step === step
+                  ? "bg-blue-600 border-blue-600 text-white"
+                  : s.step < step
+                  ? "bg-green-500 border-green-500 text-white"
+                  : "bg-white border-gray-300 text-gray-500"
+              }`}
+            >
+              {s.step}
+            </div>
+            <div
+              className={`text-xs mt-1 ${
+                s.step === step ? "text-blue-600 font-medium" : "text-gray-500"
+              }`}
+            >
+              {s.title}
+            </div>
           </div>
         ))}
       </div>
@@ -226,33 +453,14 @@ export const StepperForm = () => {
         schema={schema}
         initialValues={initialValues}
         ref={formRef}
-        onSubmit={async (values) => {
-          const answers = Object.entries(values).map(
-            ([questionId, answer]) => ({
-              questionId,
-              answer,
-            })
-          );
-
-          try {
-            setLoading(true);
-            await axiosInstance.post("/qus/answer", answers);
-            toast.success("Form submitted successfully 🎉");
-          } catch (error) {
-            toast.error("Failed to submit form ❌");
-            console.error(error);
-          } finally {
-            setLoading(false);
-          }
-        }}
+        onSubmit={handleSubmit}
       >
-        <div className="space-y-4">
-          {fields
-            .filter((f) => f.step === step)
-            .map((f) => (
-              <div key={f.name}>{renderField(f)}</div>
-            ))}
-        </div>
+        <FormWatcher
+          renderField={renderField}
+          fields={fields}
+          step={step}
+          onValuesChange={handleValuesChange}
+        />
 
         <div className="flex justify-between mt-6">
           {step > 1 && (
