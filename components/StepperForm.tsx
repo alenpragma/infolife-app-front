@@ -14,6 +14,7 @@ import { useEffect, useRef, useState } from "react";
 import { useFormContext, useWatch } from "react-hook-form";
 import { toast } from "sonner";
 import { z, ZodType } from "zod";
+import { SelectField } from "./form/fields/SelectField";
 import { showErrorAlert } from "./toast/ToastSuccess";
 
 type FieldOption = { value: string; text: string };
@@ -21,7 +22,14 @@ type Field = {
   id: string;
   name: string;
   label: string;
-  type: "TEXT" | "TEXTAREA" | "RADIO" | "CHECKBOX" | "CHECKBOX_GROUP" | "DATE";
+  type:
+    | "TEXT"
+    | "TEXTAREA"
+    | "RADIO"
+    | "CHECKBOX"
+    | "CHECKBOX_GROUP"
+    | "DATE"
+    | "SELECT";
   required?: boolean;
   placeholder?: string;
   options?: FieldOption[];
@@ -293,62 +301,71 @@ export const StepperForm = () => {
 
     const isRequired = isFieldRequired(field, values);
 
-    switch (field.type) {
-      case "TEXT":
-        return (
-          <TextField
-            name={field.name}
-            label={field.label}
-            placeholder={field.placeholder}
-            required={isRequired}
-          />
-        );
-      case "TEXTAREA":
-        return (
-          <TextAreaField
-            name={field.name}
-            label={field.label}
-            placeholder={field.placeholder}
-            autoResize
-            required={isRequired}
-          />
-        );
-      case "RADIO":
-        return (
-          <RadioGroupField
-            name={field.name}
-            options={field.options!}
-            required={isRequired}
-          />
-        );
-      case "CHECKBOX":
-        return (
-          <CheckboxField
-            name={field.name}
-            label={field.label}
-            required={isRequired}
-          />
-        );
-      case "CHECKBOX_GROUP":
-        return (
-          <CheckboxGroupField
-            name={field.name}
-            label={field.label}
-            options={field.options!}
-            required={isRequired}
-          />
-        );
-      case "DATE":
-        return (
-          <DateField
-            name={field.name}
-            label={field.label}
-            required={isRequired}
-          />
-        );
-      default:
-        return null;
-    }
+    return (
+      <div className="space-y-1">
+        {/* Field label / question */}
+        <label className="block font-medium text-sm">{field.label}</label>
+
+        {/* Field input */}
+        {(() => {
+          switch (field.type) {
+            case "TEXT":
+              return (
+                <TextField
+                  name={field.name}
+                  placeholder={field.placeholder}
+                  required={isRequired}
+                />
+              );
+            case "TEXTAREA":
+              return (
+                <TextAreaField
+                  name={field.name}
+                  placeholder={field.placeholder}
+                  autoResize
+                  required={isRequired}
+                />
+              );
+            case "RADIO":
+              return (
+                <RadioGroupField
+                  name={field.name}
+                  options={field.options!}
+                  required={isRequired}
+                />
+              );
+            case "SELECT":
+              return (
+                <SelectField
+                  name={field.name}
+                  options={field.options!}
+                  required={isRequired}
+                />
+              );
+            case "CHECKBOX":
+              return (
+                <CheckboxField
+                  name={field.name}
+                  label=""
+                  required={isRequired}
+                />
+              );
+            case "CHECKBOX_GROUP":
+              return (
+                <CheckboxGroupField
+                  name={field.name}
+                  options={field.options!}
+                  required={isRequired}
+                />
+              );
+            case "DATE":
+              return <DateField name={field.name} required={isRequired} />;
+            default:
+              return null;
+          }
+        })()}
+      </div>
+    );
   };
 
   const validateCurrentStep = async (): Promise<boolean> => {
@@ -390,7 +407,7 @@ export const StepperForm = () => {
 
   const handleSubmit = async (values: any) => {
     setLoading(true);
-    formRef.current.form.reset(); // <-- form clear here
+    // formRef.current.form.reset(); // <-- form clear here
     try {
       // Filter out hidden field values before submission
       const submissionData: any = {};
