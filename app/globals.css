@@ -117,12 +117,14 @@
   * {
     @apply border-border outline-ring/50;
   }
+
   body {
     @apply bg-background text-foreground;
   }
 }
 
 @layer utilities {
+
   /* Smooth scroll behavior for better navigation */
   html {
     scroll-behavior: smooth;
@@ -146,10 +148,12 @@
 
   /* Floating animation for background elements */
   @keyframes float {
+
     0%,
     100% {
       transform: translateY(0px);
     }
+
     50% {
       transform: translateY(-20px);
     }
@@ -234,6 +238,7 @@
     0% {
       background-position: -200px 0;
     }
+
     100% {
       background-position: calc(200px + 100%) 0;
     }
@@ -268,3 +273,41 @@
     @apply focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2;
   }
 }
+
+
+
+/* ********************* toast style */
+.custom-toast-class {
+  padding: 2px;
+  margin: 2px;
+  inline-size: fit-content;
+  background-color: #b4f6c5 !important;
+}
+
+.custom-toast-class-error {
+  padding: 2px;
+  margin: 2px;
+  inline-size: fit-content;
+  background-color: #ed120b !important;
+}
+
+.custom-body-class {
+  color: #fff;
+  font-weight: normal;
+}
+
+.Toastify__toast {
+  padding: 3px 30px !important;
+  min-block-size: auto !important;
+}
+
+.custom-toast-class {
+  padding: 0px;
+}
+
+
+.Toastify__toast {
+  pointer-events: auto;
+}
+
+/* ********************* toast style */

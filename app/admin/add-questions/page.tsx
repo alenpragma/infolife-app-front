@@ -26,7 +26,6 @@ export default function AddQuestionForm({
   questionId,
   isUpdate = false,
 }: AddQuestionFormProps) {
-  console.log(initialData, "initialData");
   const {
     register,
     handleSubmit,

@@ -10,33 +10,38 @@ import {
 } from "@/components/toast/ToastSuccess";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import axiosInstance from "@/lib/axiosConfig/axiosConfig";
-import { userSchema } from "@/schema/schema";
-import { useMutation } from "@tanstack/react-query";
-import { useRouter } from "next/navigation";
+import { updateUserSchema } from "@/schema/schema";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { useParams, useRouter } from "next/navigation";
 import { useRef } from "react";
 import { z } from "zod";
 
-type FormType = z.infer<typeof userSchema>;
+type FormType = z.infer<typeof updateUserSchema>;
 
-const initialValues: FormType = {
-  name: "",
-  email: "",
-  phone: "",
-  password: "",
-};
-
-const CreateUserPage = () => {
+const UpdateUserPage = () => {
   const formRef = useRef<GenericFormRef<FormType>>(null);
   const router = useRouter();
+  const params = useParams();
+  const userId = params?.id as string;
 
+  // ✅ User data fetch
+  const { data, isLoading } = useQuery({
+    queryKey: ["user", userId],
+    queryFn: async () => {
+      const res = await axiosInstance.get(`/users/${userId}`);
+      return res.data.data;
+    },
+    enabled: !!userId,
+  });
+
+  // ✅ Update mutation
   const { mutate, isPending } = useMutation({
-    mutationFn: async (data: FormType) => {
-      const res = await axiosInstance.post("/auth/create", data);
+    mutationFn: async (formData: FormType) => {
+      const res = await axiosInstance.patch(`/users/${userId}`, formData);
       return res.data;
     },
     onSuccess: (data) => {
-      showSuccessAlert(data.message);
-      formRef.current?.reset();
+      showSuccessAlert(data.message || "User updated successfully!");
       setTimeout(() => {
         router.push("/admin/all-users");
       }, 2000);
@@ -46,21 +51,34 @@ const CreateUserPage = () => {
     },
   });
 
-  const handleSubmit = (data: FormType) => {
-    mutate(data);
+  const handleSubmit = (formData: FormType) => {
+    mutate(formData);
   };
+
+  if (isLoading) {
+    return <p className="text-center py-10">Loading user data...</p>;
+  }
+
+  const initialValues: FormType = {
+    name: data?.name || "",
+    email: data?.email || "",
+    phone: data?.phone || "",
+    password: undefined,
+  };
+
+  console.log(data);
 
   return (
     <div className="p-6">
       <Card className="max-w-2xl mx-auto shadow-md rounded-xl border border-border1 bg-white">
         <CardHeader>
           <CardTitle className="text-2xl font-semibold text-center">
-            Create User
+            Update User
           </CardTitle>
         </CardHeader>
         <CardContent>
           <GenericForm
-            schema={userSchema}
+            schema={updateUserSchema}
             initialValues={initialValues}
             onSubmit={handleSubmit}
             ref={formRef}
@@ -82,13 +100,13 @@ const CreateUserPage = () => {
               <PasswordField
                 name="password"
                 label="Password"
-                placeholder="Enter password"
+                placeholder="Enter new password (optional)"
               />
 
               <SubmitButton
-                label="Create User"
+                label="Update User"
                 isLoading={isPending}
-                loadingLabel="Creating..."
+                loadingLabel="Updating..."
                 width="full"
               />
             </div>
@@ -99,4 +117,4 @@ const CreateUserPage = () => {
   );
 };
 
-export default CreateUserPage;
+export default UpdateUserPage;

@@ -1,8 +1,7 @@
 import HomeProvider from "@/components/provider/HomeProvider";
-import { GeistMono } from "geist/font/mono";
-import { GeistSans } from "geist/font/sans";
 import type { Metadata } from "next";
 import type React from "react";
+import { ToastContainer } from "react-toastify";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -32,7 +31,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="bn">
-      <head>
+      {/* <head>
         <style>{`
 html {
   font-family: ${GeistSans.style.fontFamily};
@@ -47,9 +46,10 @@ html {
         <meta name="application-name" content="EDULIFE" />
         <link rel="apple-touch-icon" href="/edulife-logo.png" />
         <link rel="icon" type="image/png" href="/edulife-logo.png" />
-      </head>
+      </head> */}
       <body className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-blue-100 font-sans antialiased">
         <HomeProvider>{children}</HomeProvider>
+        <ToastContainer position="top-right" autoClose={100000} />
       </body>
     </html>
   );

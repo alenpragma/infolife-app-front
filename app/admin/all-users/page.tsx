@@ -76,7 +76,7 @@ const AllUsersPage = () => {
               </div>
               <div className="flex gap-2">
                 <Link
-                  href={`/admin/users/update/${user.id}`}
+                  href={`/admin/all-users/${user.id}`}
                   className="bg-sky-500 text-white px-3 py-1 rounded hover:bg-blue-600 transition"
                 >
                   Edit

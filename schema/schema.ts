@@ -23,9 +23,17 @@ export const userSchema = z.object({
   password: z
     .string()
     .min(6, "Password must be at least 6 characters")
-    .optional(), // optional for update
+    .optional(),
   isActive: z.boolean().default(false),
   createdAt: z.date().optional(),
   updatedAt: z.date().optional(),
 });
 
+
+// ✅ Update User Schema
+export const updateUserSchema = z.object({
+  name: z.string().min(2, "Name must be at least 2 characters").max(100),
+  email: z.string().email("Invalid email address"),
+  phone: z.string().optional(),
+  password: z.string().min(6, "Password must be at least 6 characters").optional(), // optional
+});
