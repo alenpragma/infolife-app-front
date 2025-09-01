@@ -62,7 +62,7 @@ const page = () => {
 
   return (
     <>
-      <div className="container z-10">
+      <div className=" ">
         <div className="flex justify-center items-center w-full mb-3">
           <Link href="/">
             <Image

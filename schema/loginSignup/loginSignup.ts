@@ -11,6 +11,6 @@ export const registerSchema = z
     password: z
       .string()
       .nonempty({ message: "Please enter your password" })
-      .min(5, { message: "Password must be at least 5 characters" }),
+      .min(3, { message: "Password must be at least 3 characters" }),
 
   })

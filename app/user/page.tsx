@@ -2,6 +2,7 @@
 
 import { ExitModal } from "@/components/exit-modal";
 import { Card } from "@/components/ui/card";
+import { useGetData } from "@/lib/axiosConfig/FetchData";
 import { handleLogout } from "@/lib/utils/useHandleLogout";
 import {
   BookOpen,
@@ -17,6 +18,13 @@ import { useState } from "react";
 
 export default function DashboardPage() {
   const [showExitModal, setShowExitModal] = useState(false);
+
+  // ✅ Fetch profile
+  const { data, isLoading, error } = useGetData<any>(["profile"], "/profile");
+  console.log(data, "data");
+
+  if (isLoading) return <p>Loading...</p>;
+  console.log(error);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-blue-100 relative pb-20">
@@ -41,13 +49,13 @@ export default function DashboardPage() {
             </div>
             <div className="flex-1 min-w-0">
               <h2 className="font-bold text-lg sm:text-xl text-gray-800 mb-1 truncate">
-                তোফাজ্জল হোসেন রাসেল
+                {data.name}
               </h2>
               <p className="text-xs sm:text-sm text-gray-600 flex items-center mb-1">
-                <span className="mr-2 text-blue-500">👤</span> ব্রাঞ্চ ম্যানেজার
+                <span className="mr-2 text-blue-500">👤</span> {data.role}
               </p>
               <p className="text-xs sm:text-sm text-gray-600 flex items-center">
-                <span className="mr-2 text-green-500">📍</span> লক্ষ্মীপুর সদর
+                <span className="mr-2 text-green-500">📍</span> {data.location}
               </p>
             </div>
           </div>

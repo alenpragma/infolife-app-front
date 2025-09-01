@@ -1,3 +1,4 @@
+// layouts/AdminLayout.tsx
 import Sidebar from "@/components/admin/Sidebar";
 
 export default function AdminLayout({
@@ -7,14 +8,16 @@ export default function AdminLayout({
 }) {
   return (
     <div className="flex">
-      {/* Fixed Sidebar */}
-      <aside className="fixed top-0 left-0 w-72 h-full bg-gray-900 text-white overflow-y-auto">
+      {/* Sidebar */}
+      <div className="fixed ">
         <Sidebar />
-      </aside>
+      </div>
 
-      {/* Main Content */}
-      <main className="ml-72 flex-1 p-6 bg-gray-100 h-screen overflow-y-auto">
-        {children}
+      <main className="flex-1 min-h-screen bg-gray-100">
+        <div>
+          <h2 className="text-2xl bg-gray-900 font-bold h-14 text-white hidden md:block"></h2>
+          {children}
+        </div>
       </main>
     </div>
   );
