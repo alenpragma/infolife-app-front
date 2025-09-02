@@ -410,14 +410,19 @@ export const StepperForm = () => {
     // formRef.current.form.reset(); // <-- form clear here
     try {
       // Filter out hidden field values before submission
-      const submissionData: any = {};
+      const submissionData: any[] = [];
 
-      Object.keys(values).forEach((key) => {
-        const field = fields.find((f) => f.name === key);
-        if (field && isFieldVisible(field, values)) {
-          submissionData[key] = values[key];
+      fields.forEach((field) => {
+        if (isFieldVisible(field, values)) {
+          submissionData.push({
+            questionId: field.id, // questionId pathano lagbe
+            answer: values[field.name],
+          });
         }
       });
+
+      const response = await axiosInstance.post(`/qus/answer`, submissionData);
+      console.log(response, "response");
 
       alert(JSON.stringify(submissionData));
       // Your submission logic here

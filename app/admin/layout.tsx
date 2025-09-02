@@ -1,23 +1,30 @@
-// layouts/AdminLayout.tsx
+"use client";
 import Sidebar from "@/components/admin/Sidebar";
+import { useState } from "react";
 
 export default function AdminLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const [isSidebarOpen, setSidebarOpen] = useState(false);
+
   return (
     <div className="flex">
       {/* Sidebar */}
-      <div className="fixed ">
-        <Sidebar />
-      </div>
+      <Sidebar isOpen={isSidebarOpen} setIsOpen={setSidebarOpen} />
 
-      <main className="flex-1 min-h-screen bg-gray-100">
-        <div>
-          <h2 className="text-2xl bg-gray-900 font-bold h-14 text-white hidden md:block"></h2>
-          {children}
-        </div>
+      {/* Overlay for mobile */}
+      {isSidebarOpen && (
+        <div
+          className="fixed inset-0 bg-black opacity-50 z-30 md:hidden"
+          onClick={() => setSidebarOpen(false)}
+        />
+      )}
+
+      {/* Main Content */}
+      <main className="flex-1 min-h-screen bg-gray-100 md:ml-72 p-4 pt-16">
+        {children}
       </main>
     </div>
   );

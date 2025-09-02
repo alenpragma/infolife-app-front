@@ -1,21 +1,18 @@
-// components/admin/Sidebar.tsx
 "use client";
 
 import Cookies from "js-cookie";
 import { LogOut, Menu, X } from "lucide-react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
 
-const Sidebar = () => {
+interface SidebarProps {
+  isOpen: boolean;
+  setIsOpen: (open: boolean) => void;
+}
+
+const Sidebar = ({ isOpen, setIsOpen }: SidebarProps) => {
   const pathname = usePathname();
   const router = useRouter();
-  const [isOpen, setIsOpen] = useState(false);
-  const [isMounted, setIsMounted] = useState(false);
-
-  useEffect(() => {
-    setIsMounted(true);
-  }, []);
 
   const menuItems = [
     { label: "Dashboard", href: "/admin" },
@@ -27,17 +24,13 @@ const Sidebar = () => {
 
   const handleLogout = () => {
     Cookies.remove("infolife");
-    router.push("/login");
+    router.push("/");
   };
 
-  useEffect(() => {
-    setIsOpen(false);
-  }, [pathname]);
-
   return (
-    <div className="">
+    <>
       {/* Mobile Hamburger */}
-      <div className="md:hidden fixed top-0 left-0 right-0 z-50 flex items-center justify-between bg-gray-900 text-white p-4">
+      <div className="md:hidden fixed top-0 left-0 right-0 z-40 flex items-center justify-between bg-gray-900 text-white p-4">
         <h2 className="text-xl font-bold">Admin Panel</h2>
         <button
           onClick={() => setIsOpen(!isOpen)}
@@ -49,19 +42,14 @@ const Sidebar = () => {
 
       {/* Sidebar */}
       <aside
-        className={`overflow-x-scroll top-0 left-0 z-40 h-screen w-72 bg-gray-900 text-white flex flex-col p-4 transition-transform duration-300 ease-in-out
-          ${
-            isMounted
-              ? isOpen
-                ? "translate-x-0"
-                : "-translate-x-full"
-              : "-translate-x-full"
-          }
-          md:translate-x-0`}
+        className={`fixed top-0 left-0 h-full w-72 bg-gray-900 text-white flex flex-col p-4 z-50
+          transform transition-transform duration-300 ease-in-out
+          ${isOpen ? "translate-x-0" : "-translate-x-full"} md:translate-x-0`}
       >
         <h2 className="text-2xl font-bold mb-4 mt-4 hidden md:block">
           Admin Panel
         </h2>
+
         <nav className="flex-1">
           <ul className="flex flex-col gap-2">
             {menuItems.map((item) => (
@@ -80,7 +68,6 @@ const Sidebar = () => {
           </ul>
         </nav>
 
-        {/* Logout */}
         <div className="mt-auto pt-4 border-t border-gray-700">
           <button
             className="flex items-center gap-2 px-4 py-3 rounded-md bg-red-500 hover:bg-red-600 transition-colors w-full text-left"
@@ -90,15 +77,7 @@ const Sidebar = () => {
           </button>
         </div>
       </aside>
-
-      {/* Mobile Overlay */}
-      {isOpen && (
-        <div
-          className="fixed inset-0 bg-gray-700 opacity-50 z-30 md:hidden"
-          onClick={() => setIsOpen(false)}
-        />
-      )}
-    </div>
+    </>
   );
 };
 
