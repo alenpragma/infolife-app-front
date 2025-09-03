@@ -1,7 +1,12 @@
 "use client";
 
+import {
+  showErrorAlert,
+  showSuccessAlert,
+} from "@/components/toast/ToastSuccess";
 import axiosInstance from "@/lib/axiosConfig/axiosConfig";
-import { useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
 import { toast } from "sonner";
 
@@ -43,6 +48,9 @@ export default function AddQuestionForm({
     },
   });
 
+  const router = useRouter();
+  const [loading, setLoading] = useState(false);
+
   const { fields, append, remove } = useFieldArray({
     control,
     name: "options",
@@ -58,7 +66,6 @@ export default function AddQuestionForm({
   const onSubmit = async (data: FormData) => {
     data.step = Number(data.step);
 
-    // Validate options for RADIO or CHECKBOX_GROUP
     if (
       (data.type === "RADIO" || data.type === "CHECKBOX_GROUP") &&
       (!data.options || data.options.length === 0)
@@ -66,20 +73,23 @@ export default function AddQuestionForm({
       toast.error("At least one option is required");
       return;
     }
-
+    setLoading(true);
     try {
       if (isUpdate && questionId) {
         await axiosInstance.put(`/qus/${questionId}`, data);
-        toast.success("Question updated successfully!");
+        showSuccessAlert("Question updated successfully!");
+        reset();
+        router.push("admin/questions");
       } else {
         await axiosInstance.post("/qus", data);
-        toast.success("Question added successfully!");
+        showSuccessAlert("Question added successfully!");
         reset();
+        router.push("admin/questions");
       }
     } catch (err) {
-      console.error(err);
-      toast.error("Failed to save question");
+      showErrorAlert("Failed to save question");
     }
+    setLoading(false);
   };
 
   return (
@@ -191,8 +201,12 @@ export default function AddQuestionForm({
 
         <button
           type="submit"
-          className="bg-green-500 text-white px-4 py-2 rounded mt-4"
+          disabled={loading}
+          className={`${
+            loading ? "bg-green-500" : "bg-green-600"
+          } text-white px-4 py-2 rounded mt-4`}
         >
+          {/* {isUpdate ? "Update Question" : "Add Question"} */}
           {isUpdate ? "Update Question" : "Add Question"}
         </button>
       </form>

@@ -303,10 +303,8 @@ export const StepperForm = () => {
 
     return (
       <div className="space-y-1">
-        {/* Field label / question */}
         <label className="block font-medium text-sm">{field.label}</label>
 
-        {/* Field input */}
         {(() => {
           switch (field.type) {
             case "TEXT":

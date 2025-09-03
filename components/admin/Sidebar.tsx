@@ -19,7 +19,8 @@ const Sidebar = ({ isOpen, setIsOpen }: SidebarProps) => {
     { label: "Manage Users", href: "/admin/all-users" },
     { label: "Questions", href: "/admin/questions" },
     { label: "Add Questions", href: "/admin/add-questions" },
-    { label: "Answers", href: "/admin/answers" },
+    { label: "Submitions", href: "/admin/submitions" },
+    // { label: "Answers", href: "/admin/answers" },
   ];
 
   const handleLogout = () => {
