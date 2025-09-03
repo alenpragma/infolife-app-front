@@ -54,7 +54,14 @@ export default async function Page() {
               </p>
               <p className="text-sm text-gray-600">Step: {q.step}</p>
             </div>
-            <div>
+            <div className="flex gap-5">
+              <Link
+                href={`/admin/add-sub-questions/${q.id}`}
+                className="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600 transition"
+              >
+                Add sub Qus
+              </Link>
+
               <Link
                 href={`/admin/questions/${q.id}`}
                 className="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600 transition"

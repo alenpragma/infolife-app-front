@@ -1,14 +1,22 @@
 "use client";
 
+import { useState } from "react";
+import { toast } from "sonner";
+
 import {
   showErrorAlert,
   showSuccessAlert,
 } from "@/components/toast/ToastSuccess";
-import axiosInstance from "@/lib/axiosConfig/axiosConfig";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
-import { toast } from "sonner";
+import { Field } from "../StepperForm";
+import { CheckboxField } from "../form/fields/CheckboxField";
+import { CheckboxGroupField } from "../form/fields/CheckboxGroupField";
+import { DateField } from "../form/fields/DateField";
+import { RadioGroupField } from "../form/fields/RadioGroupField";
+import { SelectField } from "../form/fields/SelectField";
+import { TextAreaField } from "../form/fields/TextAreaField";
+import { TextField } from "../form/fields/TextField";
 
 type Option = { value: string; text: string };
 
@@ -20,17 +28,57 @@ type FormData = {
   options: Option[];
 };
 
-type AddQuestionFormProps = {
-  initialData?: FormData;
-  questionId?: string;
-  isUpdate?: boolean;
-};
+export default function SubQus({ qus }) {
+  console.log(qus);
 
-export default function AddQuestionForm({
-  initialData,
-  questionId,
-  isUpdate = false,
-}: AddQuestionFormProps) {
+  // -------------------------------------------------
+  const renderField = (field: Field, values: any) => {
+    return (
+      <div className="space-y-1">
+        <label className="block font-medium text-sm">{field.label}</label>
+
+        {(() => {
+          switch (field.type) {
+            case "TEXT":
+              return (
+                <TextField name={field.name} placeholder={field.placeholder} />
+              );
+            case "TEXTAREA":
+              return (
+                <TextAreaField
+                  name={field.name}
+                  placeholder={field.placeholder}
+                  autoResize
+                />
+              );
+            case "RADIO":
+              return (
+                <RadioGroupField name={field.name} options={field.options!} />
+              );
+            case "SELECT":
+              return <SelectField name={field.name} options={field.options!} />;
+            case "CHECKBOX":
+              return <CheckboxField name={field.name} label="" />;
+            case "CHECKBOX_GROUP":
+              return (
+                <CheckboxGroupField
+                  name={field.name}
+                  options={field.options!}
+                />
+              );
+            case "DATE":
+              return <DateField name={field.name} />;
+            default:
+              return null;
+          }
+        })()}
+      </div>
+    );
+  };
+
+  // -------------------------------------------------
+  console.log(qus);
+
   const {
     register,
     handleSubmit,
@@ -39,7 +87,7 @@ export default function AddQuestionForm({
     reset,
     formState: { errors },
   } = useForm<FormData>({
-    defaultValues: initialData || {
+    defaultValues: {
       text: "",
       type: "TEXT",
       required: false,
@@ -58,11 +106,6 @@ export default function AddQuestionForm({
 
   const selectedType = watch("type");
 
-  // Reset form if initialData changes (for update)
-  useEffect(() => {
-    if (initialData) reset(initialData);
-  }, [initialData, reset]);
-
   const onSubmit = async (data: FormData) => {
     data.step = Number(data.step);
 
@@ -73,9 +116,13 @@ export default function AddQuestionForm({
       toast.error("At least one option is required");
       return;
     }
+
+    alert(JSON.stringify(data));
+    return;
+
     setLoading(true);
     try {
-      await axiosInstance.post("/qus", data);
+      // await axiosInstance.post("/qus", data);
       showSuccessAlert("Question added successfully!");
       reset();
       router.push("admin/questions");
@@ -86,12 +133,34 @@ export default function AddQuestionForm({
   };
 
   return (
-    <div className="max-w-2xl mx-auto bg-white p-6 rounded-xl shadow-md">
-      {/* <h2 className="text-xl font-bold mb-4">
-        {isUpdate ? "Update Question" : "Add Question"}
-      </h2> */}
+    <div className="p-6 max-w-2xl mx-auto">
+      {/* <h1 className="text-2xl font-bold mb-4">{questionData.title}</h1> */}
+
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
         {/* Question Text */}
+        {selectedType === "TEXT" || selectedType === "TEXTAREA" ? (
+          <input
+            {...register("text", { required: "Answer is required" })}
+            className="w-full border rounded px-3 py-2"
+            placeholder="Enter your answer"
+          />
+        ) : null}
+
+        {(selectedType === "RADIO" || selectedType === "CHECKBOX_GROUP") && (
+          <div className="space-y-2">
+            {fields.map((field, index) => (
+              <label key={field.id} className="flex items-center gap-2">
+                <input
+                  type={selectedType === "RADIO" ? "radio" : "checkbox"}
+                  {...register(`options.${index}.value`)}
+                  value={field.value}
+                />
+                <span>{field.text || "(empty)"}</span>
+              </label>
+            ))}
+          </div>
+        )}
+
         <div>
           <label className="block font-medium mb-1">Question Text</label>
           <input

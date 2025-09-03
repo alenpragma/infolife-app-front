@@ -94,9 +94,6 @@ export default function AddQuestionForm({
 
   return (
     <div className="max-w-2xl mx-auto bg-white p-6 rounded-xl shadow-md">
-      <h2 className="text-xl font-bold mb-4">
-        {isUpdate ? "Update Question" : "Add Question"}
-      </h2>
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
         {/* Question Text */}
         <div>

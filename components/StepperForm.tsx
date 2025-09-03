@@ -18,7 +18,8 @@ import { SelectField } from "./form/fields/SelectField";
 import { showErrorAlert } from "./toast/ToastSuccess";
 
 type FieldOption = { value: string; text: string };
-type Field = {
+
+export type Field = {
   id: string;
   name: string;
   label: string;
