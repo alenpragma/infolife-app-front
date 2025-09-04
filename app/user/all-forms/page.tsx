@@ -13,7 +13,6 @@ import {
   GraduationCap,
   User,
 } from "lucide-react";
-import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 
@@ -111,31 +110,6 @@ export default function AllFormsPage() {
         ></div>
       </div>
 
-      {/* Header */}
-      <div className="bg-white/95 backdrop-blur-sm shadow-lg p-4 flex items-center relative z-10">
-        <Link href="/dashboard">
-          <ArrowLeft className="w-6 h-6 text-gray-600 hover:text-blue-600 transition-colors" />
-        </Link>
-        <div className="flex-1 flex justify-center">
-          <div className="flex items-center space-x-3">
-            <Image
-              src="/edulife-logo.png"
-              alt="EDULIFE Logo"
-              width={40}
-              height={40}
-              className="object-contain"
-            />
-            <div>
-              <div className="text-blue-600 font-bold text-lg">EDULIFE</div>
-              <div className="text-xs text-gray-600 font-medium">
-                IT INSTITUTE
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Page Title */}
       <div className="p-4 relative z-10">
         <div className="text-center mb-6">
           <h1 className="text-2xl font-bold text-gray-800 mb-2">সব ফরম</h1>

@@ -1,5 +1,6 @@
 import HomeProvider from "@/components/provider/HomeProvider";
 import type { Metadata } from "next";
+import Head from "next/head";
 import type React from "react";
 import { ToastContainer } from "react-toastify";
 import "./globals.css";
@@ -31,6 +32,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="bn">
+      {/* <Head>
+        <link rel="manifest" href="/manifest.json" />
+        <meta name="theme-color" content="#000000" />
+        <link rel="apple-touch-icon" href="/icons/icon-192x192.png" />
+      </Head> */}
+
       {/* <head>
         <style>{`
 html {

@@ -1,14 +1,14 @@
-import { cn } from '@/lib/utils';
-import { FC } from 'react';
-import { Button, ButtonProps } from '@/components/ui/button';
+import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
+import { FC } from "react";
 
-type SubmitButtonProps = ButtonProps & {
-	isLoading?: boolean;
-	disabled?: boolean;
-	label?: string;
-	loadingLabel?: string;
-	width?: 'full' | 'auto';
-	loadingIconClass?: string;
+type SubmitButtonProps = {
+  isLoading?: boolean;
+  disabled?: boolean;
+  label?: string;
+  loadingLabel?: string;
+  width?: "full" | "auto";
+  loadingIconClass?: string;
 };
 
 /**
@@ -25,23 +25,23 @@ type SubmitButtonProps = ButtonProps & {
  */
 
 export const SubmitButton: FC<SubmitButtonProps> = ({
-	isLoading = false,
-	disabled = false,
-	label = 'Save Changes',
-	loadingLabel = 'Saving...',
-	width = 'full',
-	...props
+  isLoading = false,
+  disabled = false,
+  label = "Save Changes",
+  loadingLabel = "Saving...",
+  width = "full",
+  ...props
 }) => {
-	return (
-		<Button
-			className={cn('w-full', width === 'auto' && 'w-auto')}
-			type="submit"
-			disabled={isLoading || disabled}
-			{...props}
-		>
-			{isLoading ? <>{loadingLabel}</> : <>{label}</>}
-		</Button>
-	);
+  return (
+    <Button
+      className={cn("w-full", width === "auto" && "w-auto")}
+      type="submit"
+      disabled={isLoading || disabled}
+      {...props}
+    >
+      {isLoading ? <>{loadingLabel}</> : <>{label}</>}
+    </Button>
+  );
 };
 
-SubmitButton.displayName = 'SubmitButton';
+SubmitButton.displayName = "SubmitButton";

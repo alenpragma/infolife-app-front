@@ -54,7 +54,7 @@ export default function DashboardPage() {
       </div>
 
       <div className="p-3 sm:p-4 grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 relative z-10">
-        <Link href="/user/quiz">
+        <Link href="/user/new-form">
           <Card className="p-6 sm:p-8 bg-white/95 backdrop-blur-sm shadow-md hover:shadow-xl transition-all duration-300 cursor-pointer rounded-2xl border-0 transform ">
             <div className="text-center">
               <div className="w-14 h-14 sm:w-16 sm:h-16 bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl flex items-center justify-center mx-auto mb-3 sm:mb-4 shadow-lg">

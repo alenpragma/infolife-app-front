@@ -1,0 +1,69 @@
+"use client";
+
+import { useGetData } from "@/lib/axiosConfig/FetchData";
+import { Card } from "../ui/card";
+
+const AdminHome = () => {
+  const { data, isLoading, error } = useGetData<any>(
+    ["admin-details"],
+    "/admin/details"
+  );
+
+  return (
+    <>
+      <div className="mt-5 grid grid-cols-1 md:grid-cols-2 lg: lg:grid-cols-3 gap-2 lg:gap-5">
+        <Card className="p-6 sm:p-8 bg-white/95 backdrop-blur-sm shadow-md hover:shadow-xl transition-all duration-300 cursor-pointer rounded-2xl border-0 transform ">
+          <div className="text-center">
+            <p className="font-semibold text-gray-800 text-2xl">Total Users</p>
+            <p className="font-semibold text-gray-800 text-2xl">
+              {data?.totalUsers}
+            </p>
+          </div>
+        </Card>
+
+        <Card className="p-6 sm:p-8 bg-white/95 backdrop-blur-sm shadow-md hover:shadow-xl transition-all duration-300 cursor-pointer rounded-2xl border-0 transform ">
+          <div className="text-center">
+            <p className="font-semibold text-gray-800 text-2xl">
+              Total Submissions
+            </p>
+            <p className="font-semibold text-gray-800 text-2xl">
+              {data?.totalSubmissions}
+            </p>
+          </div>
+        </Card>
+      </div>
+
+      <div className="overflow-x-auto mt-5">
+        <h1 className="text-2xl font-bold">Users</h1>
+
+        <table className="min-w-full bg-white/95 backdrop-blur-sm shadow-md rounded-2xl border-collapse">
+          <thead>
+            <tr className="bg-gray-100 text-gray-700">
+              <th className="py-3 px-5 text-left font-semibold">Name</th>
+              <th className="py-3 px-5 text-left font-semibold">Email</th>
+              <th className="py-3 px-5 text-left font-semibold">
+                Total Submissions
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            {data?.submissionCounts?.map((item: any) => (
+              <tr
+                key={item.userId}
+                className="border-b last:border-b-0 hover:bg-gray-50 transition-all duration-200"
+              >
+                <td className="py-3 px-5">{item.name}</td>
+                <td className="py-3 px-5">{item.email}</td>
+                <td className="py-3 px-5 font-semibold">
+                  {item._count.submition}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </>
+  );
+};
+
+export default AdminHome;

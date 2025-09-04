@@ -400,7 +400,6 @@ export const StepperForm = () => {
 
   const handleSubmit = async (values: any) => {
     setLoading(true);
-    // formRef.current.form.reset(); // <-- form clear here
     try {
       const submissionData: any[] = [];
 
@@ -414,6 +413,7 @@ export const StepperForm = () => {
       });
 
       const response = await axiosInstance.post(`/qus/answer`, submissionData);
+      formRef.current.form.reset(); // <-- form clear here
 
       showSuccessAlert("Form submitted successfully!");
     } catch (error) {

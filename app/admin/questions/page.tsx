@@ -11,8 +11,8 @@ type Question = {
 
 async function getQuestions(): Promise<Question[]> {
   const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/qus`, {
-    // cache: "no-store",
-    next: { revalidate: 10 }, // ISR
+    cache: "no-store",
+    // next: { revalidate: 10 }, // ISR
   });
 
   if (!res.ok) {
