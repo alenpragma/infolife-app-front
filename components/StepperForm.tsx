@@ -15,7 +15,7 @@ import { useFormContext, useWatch } from "react-hook-form";
 import { toast } from "sonner";
 import { z, ZodType } from "zod";
 import { SelectField } from "./form/fields/SelectField";
-import { showErrorAlert } from "./toast/ToastSuccess";
+import { showErrorAlert, showSuccessAlert } from "./toast/ToastSuccess";
 
 type FieldOption = { value: string; text: string };
 
@@ -342,13 +342,7 @@ export const StepperForm = () => {
                 />
               );
             case "CHECKBOX":
-              return (
-                <CheckboxField
-                  name={field.name}
-                  label=""
-                  required={isRequired}
-                />
-              );
+              return <CheckboxField name={field.label} required={isRequired} />;
             case "CHECKBOX_GROUP":
               return (
                 <CheckboxGroupField
@@ -408,7 +402,6 @@ export const StepperForm = () => {
     setLoading(true);
     // formRef.current.form.reset(); // <-- form clear here
     try {
-      // Filter out hidden field values before submission
       const submissionData: any[] = [];
 
       fields.forEach((field) => {
@@ -421,15 +414,10 @@ export const StepperForm = () => {
       });
 
       const response = await axiosInstance.post(`/qus/answer`, submissionData);
-      console.log(response, "response");
 
-      alert(JSON.stringify(submissionData));
-      // Your submission logic here
-      console.log("Form submitted:", submissionData);
-      toast.success("Form submitted successfully!");
+      showSuccessAlert("Form submitted successfully!");
     } catch (error) {
-      console.error("Submission error:", error);
-      toast.error("Failed to submit form");
+      showErrorAlert("Failed to submit form");
     } finally {
       setLoading(false);
     }
@@ -442,7 +430,7 @@ export const StepperForm = () => {
   if (loading && fields.length === 0) return <p>Loading form...</p>;
 
   return (
-    <Card className="bg-white shadow-xl rounded-2xl p-6 my-6 max-w-2xl mx-auto border">
+    <Card className="bg-white shadow-sm rounded-2xl p-6 my-6 max-w-2xl mx-auto border">
       {/* Step indicators */}
       <div className="flex justify-between mb-6 relative">
         <div className="absolute top-1/2 left-0 right-0 h-1 bg-gray-200 -translate-y-1/2 -z-10"></div>

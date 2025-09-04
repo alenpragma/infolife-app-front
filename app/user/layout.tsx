@@ -1,11 +1,16 @@
+import TopNav from "@/components/user/TopNav";
+import UserBottomNav from "@/components/user/UserBottomNav";
+
 export default function AdminLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
   return (
-    <div className=" ">
-      <main className=" ">{children}</main>
-    </div>
+    <>
+      <TopNav />
+      <main className="pt-20 pb-24">{children}</main>
+      <UserBottomNav />
+    </>
   );
 }

@@ -1,11 +1,11 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { Button } from "@/components/ui/button"
-import { Card } from "@/components/ui/card"
-import { ArrowLeft, ArrowRight } from "lucide-react"
-import Link from "next/link"
-import Image from "next/image"
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import { ArrowLeft, ArrowRight } from "lucide-react";
+import Image from "next/image";
+import Link from "next/link";
+import { useState } from "react";
 
 const questions = [
   {
@@ -18,33 +18,33 @@ const questions = [
     question: "তারা কী প্রাইভেট শিক্ষকের কাছে পড়ে?",
     progress: "৩-১৭",
   },
-]
+];
 
 export default function QuizPage() {
-  const [currentQuestion, setCurrentQuestion] = useState(0)
-  const [answers, setAnswers] = useState<{ [key: number]: string }>({})
+  const [currentQuestion, setCurrentQuestion] = useState(0);
+  const [answers, setAnswers] = useState<{ [key: number]: string }>({});
 
   const handleAnswer = (answer: string) => {
     setAnswers((prev) => ({
       ...prev,
       [currentQuestion]: answer,
-    }))
-  }
+    }));
+  };
 
   const nextQuestion = () => {
     if (currentQuestion < questions.length - 1) {
-      setCurrentQuestion((prev) => prev + 1)
+      setCurrentQuestion((prev) => prev + 1);
     } else {
       // Navigate to form page
-      window.location.href = "/form"
+      window.location.href = "/form";
     }
-  }
+  };
 
   const prevQuestion = () => {
     if (currentQuestion > 0) {
-      setCurrentQuestion((prev) => prev - 1)
+      setCurrentQuestion((prev) => prev - 1);
     }
-  }
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-blue-100 relative">
@@ -65,10 +65,18 @@ export default function QuizPage() {
           <ArrowLeft className="w-6 h-6 text-gray-600 hover:text-blue-600 transition-colors" />
         </Link>
         <div className="flex items-center space-x-3">
-          <Image src="/edulife-logo.png" alt="EDULIFE Logo" width={40} height={40} className="object-contain" />
+          <Image
+            src="/edulife-logo.png"
+            alt="EDULIFE Logo"
+            width={40}
+            height={40}
+            className="object-contain"
+          />
           <div>
             <div className="text-blue-600 font-bold text-lg">EDULIFE</div>
-            <div className="text-xs text-gray-600 font-medium">IT INSTITUTE</div>
+            <div className="text-xs text-gray-600 font-medium">
+              IT INSTITUTE
+            </div>
           </div>
         </div>
         <div></div>
@@ -84,7 +92,9 @@ export default function QuizPage() {
         <div className="mt-3 bg-gray-200 rounded-full h-3 shadow-inner">
           <div
             className="bg-gradient-to-r from-blue-500 to-blue-600 h-3 rounded-full transition-all duration-500 shadow-sm"
-            style={{ width: `${((currentQuestion + 1) / questions.length) * 100}%` }}
+            style={{
+              width: `${((currentQuestion + 1) / questions.length) * 100}%`,
+            }}
           ></div>
         </div>
         <div className="flex justify-between mt-2 text-sm text-gray-600">
@@ -94,10 +104,12 @@ export default function QuizPage() {
       </div>
 
       <div className="p-4 sm:p-6 relative z-10">
-        <Card className="p-4 sm:p-6 md:p-8 bg-white/95 backdrop-blur-sm shadow-2xl mb-6 sm:mb-8 rounded-2xl border-0 transform hover:scale-105 transition-all duration-300">
+        <Card className="p-4 sm:p-6 md:p-8 bg-white/95 backdrop-blur-sm shadow-md mb-6 sm:mb-8 rounded-2xl border-0 transform hover:scale-105 transition-all duration-300">
           <div className="text-center mb-4">
             <div className="w-12 h-12 sm:w-16 sm:h-16 bg-gradient-to-br from-blue-500 to-blue-600 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
-              <span className="text-white font-bold text-lg sm:text-2xl">{currentQuestion + 1}</span>
+              <span className="text-white font-bold text-lg sm:text-2xl">
+                {currentQuestion + 1}
+              </span>
             </div>
           </div>
           <p className="text-lg sm:text-xl text-gray-800 leading-relaxed text-center font-medium px-2">
@@ -131,7 +143,7 @@ export default function QuizPage() {
         </div>
       </div>
 
-      <div className="fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-sm p-4 sm:p-6 border-t shadow-2xl z-20">
+      <div className="fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-sm p-4 sm:p-6 border-t shadow-md z-20">
         <div className="flex justify-between">
           {currentQuestion > 0 ? (
             <Button
@@ -157,5 +169,5 @@ export default function QuizPage() {
         </div>
       </div>
     </div>
-  )
+  );
 }

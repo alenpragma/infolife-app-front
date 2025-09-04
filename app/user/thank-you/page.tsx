@@ -1,19 +1,19 @@
-"use client"
+"use client";
 
-import { useEffect, useState } from "react"
-import { Button } from "@/components/ui/button"
-import { Card } from "@/components/ui/card"
-import { CheckCircle, Home, FileText, Sparkles } from "lucide-react"
-import Link from "next/link"
-import Image from "next/image"
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import { CheckCircle, FileText, Home, Sparkles } from "lucide-react";
+import Image from "next/image";
+import Link from "next/link";
+import { useEffect, useState } from "react";
 
 export default function ThankYouPage() {
-  const [showConfetti, setShowConfetti] = useState(true)
+  const [showConfetti, setShowConfetti] = useState(true);
 
   useEffect(() => {
-    const timer = setTimeout(() => setShowConfetti(false), 3000)
-    return () => clearTimeout(timer)
-  }, [])
+    const timer = setTimeout(() => setShowConfetti(false), 3000);
+    return () => clearTimeout(timer);
+  }, []);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-green-50 via-white to-blue-50 relative overflow-hidden">
@@ -41,32 +41,48 @@ export default function ThankYouPage() {
       {/* Header */}
       <div className="bg-white/95 backdrop-blur-sm shadow-lg p-4 flex items-center justify-center relative z-10">
         <div className="flex items-center space-x-3">
-          <Image src="/edulife-logo.png" alt="EDULIFE Logo" width={40} height={40} className="object-contain" />
+          <Image
+            src="/edulife-logo.png"
+            alt="EDULIFE Logo"
+            width={40}
+            height={40}
+            className="object-contain"
+          />
           <div>
             <div className="text-blue-600 font-bold text-lg">EDULIFE</div>
-            <div className="text-xs text-gray-600 font-medium">IT INSTITUTE</div>
+            <div className="text-xs text-gray-600 font-medium">
+              IT INSTITUTE
+            </div>
           </div>
         </div>
       </div>
 
       {/* Main Content */}
       <div className="flex items-center justify-center min-h-[calc(100vh-80px)] p-4 sm:p-6 relative z-10">
-        <Card className="w-full max-w-md bg-white/95 backdrop-blur-sm shadow-2xl rounded-3xl border-0 p-6 sm:p-8 text-center transform animate-pulse">
+        <Card className="w-full max-w-md bg-white/95 backdrop-blur-sm shadow-md rounded-3xl border-0 p-6 sm:p-8 text-center transform animate-pulse">
           {/* Success Icon */}
           <div className="relative mb-6">
-            <div className="w-20 h-20 sm:w-24 sm:h-24 bg-gradient-to-br from-green-500 to-green-600 rounded-full flex items-center justify-center mx-auto shadow-2xl animate-bounce">
+            <div className="w-20 h-20 sm:w-24 sm:h-24 bg-gradient-to-br from-green-500 to-green-600 rounded-full flex items-center justify-center mx-auto shadow-md animate-bounce">
               <CheckCircle className="w-10 h-10 sm:w-12 sm:h-12 text-white" />
             </div>
             <div className="absolute -top-2 -right-2">
-              <Sparkles className="w-6 h-6 text-yellow-500 animate-spin" style={{ animationDuration: "2s" }} />
+              <Sparkles
+                className="w-6 h-6 text-yellow-500 animate-spin"
+                style={{ animationDuration: "2s" }}
+              />
             </div>
           </div>
 
           {/* Thank You Message */}
-          <h1 className="text-2xl sm:text-3xl font-bold text-gray-800 mb-4">ধন্যবাদ!</h1>
-          <p className="text-lg sm:text-xl text-green-600 font-semibold mb-2">ফর্ম সফলভাবে জমা হয়েছে</p>
+          <h1 className="text-2xl sm:text-3xl font-bold text-gray-800 mb-4">
+            ধন্যবাদ!
+          </h1>
+          <p className="text-lg sm:text-xl text-green-600 font-semibold mb-2">
+            ফর্ম সফলভাবে জমা হয়েছে
+          </p>
           <p className="text-gray-600 mb-8 leading-relaxed">
-            আপনার তথ্য সংগ্রহ সম্পূর্ণ হয়েছে। আমাদের টিম শীঘ্রই আপনার সাথে যোগাযোগ করবে।
+            আপনার তথ্য সংগ্রহ সম্পূর্ণ হয়েছে। আমাদের টিম শীঘ্রই আপনার সাথে
+            যোগাযোগ করবে।
           </p>
 
           {/* Success Stats */}
@@ -106,11 +122,12 @@ export default function ThankYouPage() {
           {/* Additional Info */}
           <div className="mt-6 p-4 bg-blue-50 rounded-xl">
             <p className="text-sm text-blue-700">
-              <strong>রেফারেন্স নম্বর:</strong> EDU-{Date.now().toString().slice(-6)}
+              <strong>রেফারেন্স নম্বর:</strong> EDU-
+              {Date.now().toString().slice(-6)}
             </p>
           </div>
         </Card>
       </div>
     </div>
-  )
+  );
 }

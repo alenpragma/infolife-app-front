@@ -9,14 +9,6 @@ import {
 } from "@/components/toast/ToastSuccess";
 import { useRouter } from "next/navigation";
 import { useFieldArray, useForm } from "react-hook-form";
-import { Field } from "../StepperForm";
-import { CheckboxField } from "../form/fields/CheckboxField";
-import { CheckboxGroupField } from "../form/fields/CheckboxGroupField";
-import { DateField } from "../form/fields/DateField";
-import { RadioGroupField } from "../form/fields/RadioGroupField";
-import { SelectField } from "../form/fields/SelectField";
-import { TextAreaField } from "../form/fields/TextAreaField";
-import { TextField } from "../form/fields/TextField";
 
 type Option = { value: string; text: string };
 
@@ -32,50 +24,46 @@ export default function SubQus({ qus }) {
   console.log(qus);
 
   // -------------------------------------------------
-  const renderField = (field: Field, values: any) => {
-    return (
-      <div className="space-y-1">
-        <label className="block font-medium text-sm">{field.label}</label>
 
-        {(() => {
-          switch (field.type) {
-            case "TEXT":
-              return (
-                <TextField name={field.name} placeholder={field.placeholder} />
-              );
-            case "TEXTAREA":
-              return (
-                <TextAreaField
-                  name={field.name}
-                  placeholder={field.placeholder}
-                  autoResize
-                />
-              );
-            case "RADIO":
-              return (
-                <RadioGroupField name={field.name} options={field.options!} />
-              );
-            case "SELECT":
-              return <SelectField name={field.name} options={field.options!} />;
-            case "CHECKBOX":
-              return <CheckboxField name={field.name} label="" />;
-            case "CHECKBOX_GROUP":
-              return (
-                <CheckboxGroupField
-                  name={field.name}
-                  options={field.options!}
-                />
-              );
-            case "DATE":
-              return <DateField name={field.name} />;
-            default:
-              return null;
-          }
-        })()}
-      </div>
-    );
+  const renderField = (field) => {
+    switch (field.type) {
+      case "TEXT":
+        return (
+          <input
+            type="text"
+            {...register(field.id, { required: field.required })}
+            className="border p-2 w-full rounded"
+          />
+        );
+      case "TEXTAREA":
+        return (
+          <textarea
+            {...register(field.id, { required: field.required })}
+            className="border p-2 w-full rounded"
+          />
+        );
+      case "RADIO":
+        return field.options.map((opt) => (
+          <label key={opt.id || opt.value} className="block">
+            <input
+              type="radio"
+              value={opt.value}
+              {...register(field.id, { required: field.required })}
+            />
+            {opt.text}
+          </label>
+        ));
+      case "CHECKBOX":
+        return (
+          <input
+            type="checkbox"
+            {...register(field.id, { required: field.required })}
+          />
+        );
+      default:
+        return null;
+    }
   };
-
   // -------------------------------------------------
   console.log(qus);
 
@@ -107,8 +95,6 @@ export default function SubQus({ qus }) {
   const selectedType = watch("type");
 
   const onSubmit = async (data: FormData) => {
-    data.step = Number(data.step);
-
     if (
       (data.type === "RADIO" || data.type === "CHECKBOX_GROUP") &&
       (!data.options || data.options.length === 0)
@@ -137,6 +123,21 @@ export default function SubQus({ qus }) {
       {/* <h1 className="text-2xl font-bold mb-4">{questionData.title}</h1> */}
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+        {/* {qus.map((field) => (
+          <div key={field.id} className="flex flex-col">
+            <label className="font-medium mb-1">
+              {field.text} {field.required && "*"}
+            </label>
+            {renderField(field)}
+          </div>
+        ))} */}
+        <div key={qus.id} className="flex flex-col">
+          <label className="font-medium mb-1">
+            {qus.text} {qus.required && "*"}
+          </label>
+          {renderField(qus)}
+        </div>
+
         {/* Question Text */}
         {selectedType === "TEXT" || selectedType === "TEXTAREA" ? (
           <input

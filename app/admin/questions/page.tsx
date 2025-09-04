@@ -9,7 +9,6 @@ type Question = {
   step: number;
 };
 
-// ✅ SSR function
 async function getQuestions(): Promise<Question[]> {
   const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/qus`, {
     // cache: "no-store",

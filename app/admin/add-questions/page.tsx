@@ -79,12 +79,12 @@ export default function AddQuestionForm({
         await axiosInstance.put(`/qus/${questionId}`, data);
         showSuccessAlert("Question updated successfully!");
         reset();
-        router.push("admin/questions");
+        router.push("/admin/questions");
       } else {
         await axiosInstance.post("/qus", data);
         showSuccessAlert("Question added successfully!");
         reset();
-        router.push("admin/questions");
+        router.push("/admin/questions");
       }
     } catch (err) {
       showErrorAlert("Failed to save question");

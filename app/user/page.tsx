@@ -3,16 +3,7 @@
 import { ExitModal } from "@/components/exit-modal";
 import { Card } from "@/components/ui/card";
 import { useGetData } from "@/lib/axiosConfig/FetchData";
-import { handleLogout } from "@/lib/utils/useHandleLogout";
-import {
-  BookOpen,
-  Calendar,
-  FileText,
-  Home,
-  List,
-  LogOut,
-  Plus,
-} from "lucide-react";
+import { BookOpen, Calendar, FileText, List } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 
@@ -112,39 +103,6 @@ export default function DashboardPage() {
             </p>
           </div>
         </Card>
-      </div>
-
-      <div className="fixed bottom-0 left-0 right-0 bg-gradient-to-r from-blue-600 to-blue-700 text-white shadow-2xl z-20">
-        <div className="grid grid-cols-3">
-          <button className="p-3 sm:p-4 text-center hover:bg-blue-500 transition-colors duration-200">
-            <Home className="w-5 h-5 sm:w-6 sm:h-6 mx-auto mb-1" />
-            <span className="text-xs sm:text-sm font-medium">হোম</span>
-          </button>
-          <Link
-            href="/user/test"
-            prefetch={true} // 👈 সাথে সাথে preload হবে
-            className="p-3 sm:p-4 text-center hover:bg-blue-500 transition-colors duration-200"
-          >
-            <Plus className="w-5 h-5 sm:w-6 sm:h-6 mx-auto mb-1" />
-            <span className="text-xs sm:text-sm font-medium">নতুন ফরম</span>
-          </Link>
-
-          {/* <Link
-            href="/user/quiz"
-            className="p-3 sm:p-4 text-center hover:bg-blue-500 transition-colors duration-200"
-          >
-            <Plus className="w-5 h-5 sm:w-6 sm:h-6 mx-auto mb-1" />
-            <span className="text-xs sm:text-sm font-medium">নতুন ফরম</span>
-          </Link> */}
-
-          <button
-            className="p-3 sm:p-4 text-center hover:bg-blue-500 transition-colors duration-200"
-            onClick={() => handleLogout()}
-          >
-            <LogOut className="w-5 h-5 sm:w-6 sm:h-6 mx-auto mb-1" />
-            <span className="text-xs sm:text-sm font-medium">বাহির</span>
-          </button>
-        </div>
       </div>
 
       <ExitModal
