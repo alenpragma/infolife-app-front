@@ -41,7 +41,10 @@ const page = () => {
       return response.data;
     },
     onSuccess: (data: LoginResponse) => {
+      const role = data.data.user.role;
       Cookies.set("infolife", data.data.token);
+      Cookies.set("role", role, { expires: 7, sameSite: "strict" });
+
       console.log(data?.data?.user.role, "data");
 
       showSuccessAlert(data.message);
