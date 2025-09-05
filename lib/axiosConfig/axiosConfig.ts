@@ -14,9 +14,10 @@ export type IGenericErrorMessage = {
   path: string | number;
   message: string;
 };
+const url = process.env.NEXT_PUBLIC_API_URL;
 
 const axiosInstance = axios.create({
-  baseURL: `http://localhost:5000/api/v1`,
+  baseURL: url,
   timeout: 30000,
   headers: {
     "Content-Type": "application/json",

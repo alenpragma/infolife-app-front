@@ -1,7 +1,7 @@
 "use client";
 
 import axiosInstance from "@/lib/axiosConfig/axiosConfig";
-import { ViewIcon, X } from "lucide-react";
+import { X } from "lucide-react"; // যদি icon ব্যবহার হয়
 import { useEffect, useState } from "react";
 
 const Page = () => {
@@ -14,7 +14,7 @@ const Page = () => {
     try {
       setLoading(true);
       const res = await axiosInstance.get("/answers/submition");
-      setData(res.data.data.data); // তোমার API অনুযায়ী nested object থেকে নিতে হবে
+      setData(res.data.data.data); // nested object অনুযায়ী
     } catch (err: any) {
       console.error(err);
       setError("Failed to fetch users");
@@ -30,8 +30,6 @@ const Page = () => {
   if (loading) return <p>Loading...</p>;
   if (error) return <p className="text-red-500">{error}</p>;
 
-  console.log(selectedCollection);
-
   return (
     <div>
       <h2 className="text-xl font-bold mb-4">Submition</h2>
@@ -39,32 +37,33 @@ const Page = () => {
         <table className="min-w-full bg-white/95 backdrop-blur-sm shadow-md rounded-2xl border-collapse">
           <thead>
             <tr className="bg-gray-100 text-gray-700">
-              <th className="py-3 px-5 text-left font-semibold">Name</th>
-              <th className="py-3 px-5 text-left font-semibold">Question</th>
-              <th className="py-3 px-5 text-left font-semibold">Answer</th>
+              <th className="py-3 px-5 text-left font-semibold">Submit by</th>
+              <th className="py-3 px-5 text-left font-semibold">Survey user</th>
               <th className="py-3 px-5 text-left font-semibold">Action</th>
             </tr>
           </thead>
           <tbody>
-            {data.map((d) =>
-              d.surveyResponse?.map((s: any) => (
-                <tr
-                  key={s.id}
-                  onClick={() => setSelectedCollection(s)}
-                  className="border-b last:border-b-0 hover:bg-gray-50 transition-all duration-200"
-                >
-                  <td className="py-3 px-5">{d.name}</td>
-                  <td className="py-3 px-5">{s.question.text}</td>
-                  <td className="py-3 px-5">{s.answerText || "N/A"}</td>
-                  <td className="py-3 px-3  ">
-                    <ViewIcon />
-                  </td>
-                </tr>
-              ))
-            )}
+            {data.map((d) => (
+              <tr
+                key={d.id}
+                className="border-b last:border-b-0 hover:bg-gray-50 transition-all duration-200 cursor-pointer"
+                onClick={() => setSelectedCollection(d)}
+              >
+                <td className="py-3 px-5">
+                  {d.user.email} <br />
+                  {d.user.name}
+                </td>
+                <td className="py-3 px-5">{d.name}</td>
+                <td className="py-3 px-5 text-blue-500 underline">
+                  View Answers
+                </td>
+              </tr>
+            ))}
           </tbody>
         </table>
       </div>
+
+      {/* Modal */}
       {selectedCollection && (
         <div
           onClick={() => setSelectedCollection(null)}
@@ -81,7 +80,7 @@ const Page = () => {
               <X className="w-5 h-5" />
             </button>
             <h2 className="text-lg font-bold mb-4">
-              Answers for {selectedCollection.name}
+              Answers for {selectedCollection.user.name}
             </h2>
             <div className="space-y-2 max-h-96 overflow-y-auto">
               {selectedCollection?.surveyResponse?.map((resp: any) => (
@@ -95,7 +94,7 @@ const Page = () => {
             </div>
           </div>
         </div>
-      )}{" "}
+      )}
     </div>
   );
 };
