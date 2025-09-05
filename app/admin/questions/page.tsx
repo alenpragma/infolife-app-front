@@ -1,4 +1,5 @@
 // app/admin/questions/page.tsx
+import { url } from "@/lib/utils";
 import Link from "next/link";
 
 type Question = {
@@ -10,7 +11,7 @@ type Question = {
 };
 
 async function getQuestions(): Promise<Question[]> {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/qus`, {
+  const res = await fetch(`${url}/qus`, {
     cache: "no-store",
     // next: { revalidate: 10 }, // ISR
   });

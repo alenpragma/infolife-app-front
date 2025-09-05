@@ -1,6 +1,7 @@
 import axios, { AxiosError } from "axios";
 
 import Cookies from "js-cookie";
+import { url } from "../utils";
 import { handleLogout } from "../utils/useHandleLogout";
 
 export type IGenericErrorResponse = {
@@ -14,7 +15,6 @@ export type IGenericErrorMessage = {
   path: string | number;
   message: string;
 };
-const url = process.env.NEXT_PUBLIC_API_URL;
 
 const axiosInstance = axios.create({
   baseURL: url,
