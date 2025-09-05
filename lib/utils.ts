@@ -5,4 +5,4 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
 
-export const url = 'http://infolifeapi.edulife.agency/api/v1';
+export const url = 'https://infolifeapi.edulife.agency/api/v1';
