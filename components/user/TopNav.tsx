@@ -18,16 +18,10 @@ const TopNav = () => {
             <Image
               src="/edulife-logo.png"
               alt="EDULIFE Logo"
-              width={40}
-              height={40}
+              width={100}
+              height={100}
               className="object-contain"
             />
-            <div>
-              <div className="text-blue-600 font-bold text-lg">EDULIFE</div>
-              <div className="text-xs text-gray-600 font-medium">
-                IT INSTITUTE
-              </div>
-            </div>
           </div>
         </div>
       </div>

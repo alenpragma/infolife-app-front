@@ -7,6 +7,7 @@ import {
   showErrorAlert,
   showSuccessAlert,
 } from "@/components/toast/ToastSuccess";
+import axiosInstance from "@/lib/axiosConfig/axiosConfig";
 import { useRouter } from "next/navigation";
 import { useFieldArray, useForm } from "react-hook-form";
 
@@ -14,18 +15,35 @@ type Option = { value: string; text: string };
 
 type FormData = {
   text: string;
-  type: "TEXT" | "TEXTAREA" | "RADIO" | "CHECKBOX" | "CHECKBOX_GROUP" | "DATE";
+  type:
+    | "TEXT"
+    | "TEXTAREA"
+    | "RADIO"
+    | "SELECT"
+    | "CHECKBOX"
+    | "CHECKBOX_GROUP"
+    | "DATE";
   required: boolean;
   step: number;
   options: Option[];
 };
 
 export default function SubQus({ qus }) {
-  console.log(qus);
+  // console.log(qus, "qus");
 
   // -------------------------------------------------
-
+  // {selectedType == "SELECT" && (
+  //         <select>
+  //           {fields.map((field, index) => (
+  //             <option key={field.id} value={field.value}>
+  //               {field.text || "(empty)"}
+  //             </option>
+  //           ))}
+  //         </select>
+  //       )}
   const renderField = (field) => {
+    // console.log(field, "field");
+
     switch (field.type) {
       case "TEXT":
         return (
@@ -35,6 +53,21 @@ export default function SubQus({ qus }) {
             className="border p-2 w-full rounded"
           />
         );
+
+      case "SELECT":
+        return (
+          <select
+            {...register(field.id, { required: field.required })}
+            className="border p-2 w-full rounded"
+          >
+            {field.options?.map((opt, index) => (
+              <option key={opt.id || index} value={opt.value}>
+                {opt.text}
+              </option>
+            ))}
+          </select>
+        );
+
       case "TEXTAREA":
         return (
           <textarea
@@ -65,7 +98,7 @@ export default function SubQus({ qus }) {
     }
   };
   // -------------------------------------------------
-  console.log(qus);
+  // console.log(qus);
 
   const {
     register,
@@ -95,6 +128,9 @@ export default function SubQus({ qus }) {
   const selectedType = watch("type");
 
   const onSubmit = async (data: FormData) => {
+    console.log(data, "data");
+    return;
+
     if (
       (data.type === "RADIO" || data.type === "CHECKBOX_GROUP") &&
       (!data.options || data.options.length === 0)
@@ -103,15 +139,12 @@ export default function SubQus({ qus }) {
       return;
     }
 
-    alert(JSON.stringify(data));
-    return;
-
     setLoading(true);
     try {
-      // await axiosInstance.post("/qus", data);
+      await axiosInstance.post("/qus", data);
       showSuccessAlert("Question added successfully!");
+      router.push("/admin/questions");
       reset();
-      router.push("admin/questions");
     } catch (err) {
       showErrorAlert("Failed to save question");
     }
@@ -123,29 +156,12 @@ export default function SubQus({ qus }) {
       {/* <h1 className="text-2xl font-bold mb-4">{questionData.title}</h1> */}
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-        {/* {qus.map((field) => (
-          <div key={field.id} className="flex flex-col">
-            <label className="font-medium mb-1">
-              {field.text} {field.required && "*"}
-            </label>
-            {renderField(field)}
-          </div>
-        ))} */}
         <div key={qus.id} className="flex flex-col">
           <label className="font-medium mb-1">
             {qus.text} {qus.required && "*"}
           </label>
           {renderField(qus)}
         </div>
-
-        {/* Question Text */}
-        {selectedType === "TEXT" || selectedType === "TEXTAREA" ? (
-          <input
-            {...register("text", { required: "Answer is required" })}
-            className="w-full border rounded px-3 py-2"
-            placeholder="Enter your answer"
-          />
-        ) : null}
 
         {(selectedType === "RADIO" || selectedType === "CHECKBOX_GROUP") && (
           <div className="space-y-2">
@@ -193,6 +209,7 @@ export default function SubQus({ qus }) {
             <option value="RADIO">Radio</option>
             <option value="CHECKBOX">Checkbox</option>
             <option value="CHECKBOX_GROUP">Checkbox Group</option>
+            <option value="SELECT">Select</option>
             <option value="DATE">Date</option>
           </select>
           {errors.type && (
@@ -224,18 +241,13 @@ export default function SubQus({ qus }) {
         </div>
 
         {/* Options */}
-        {(selectedType === "RADIO" || selectedType === "CHECKBOX_GROUP") && (
+        {(selectedType === "RADIO" ||
+          selectedType === "SELECT" ||
+          selectedType === "CHECKBOX_GROUP") && (
           <div className="border p-3 rounded space-y-2">
             <label className="font-medium">Options</label>
             {fields.map((field, index) => (
               <div key={field.id} className="flex gap-2 items-center">
-                <input
-                  {...register(`options.${index}.value` as const, {
-                    required: "Option value is required",
-                  })}
-                  placeholder="Value"
-                  className="border rounded px-2 py-1 w-1/2"
-                />
                 <input
                   {...register(`options.${index}.text` as const, {
                     required: "Option text is required",

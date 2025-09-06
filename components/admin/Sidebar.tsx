@@ -25,6 +25,7 @@ const Sidebar = ({ isOpen, setIsOpen }: SidebarProps) => {
 
   const handleLogout = () => {
     Cookies.remove("infolife");
+    Cookies.remove("role");
     router.push("/");
   };
 

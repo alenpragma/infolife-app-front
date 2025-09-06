@@ -1,9 +1,17 @@
 "use client";
 
+import {
+  showErrorAlert,
+  showSuccessAlert,
+} from "@/components/toast/ToastSuccess";
 import { Card } from "@/components/ui/card";
+import axiosInstance from "@/lib/axiosConfig/axiosConfig";
 import { useGetData } from "@/lib/axiosConfig/FetchData";
-import { X } from "lucide-react";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { AxiosError } from "axios";
+import { Eye, Trash, X } from "lucide-react";
 import { useState } from "react";
+import Swal from "sweetalert2";
 
 // Mock data for today's collection statistics
 const todaysStats = {
@@ -16,12 +24,47 @@ const todaysStats = {
 };
 
 export default function page() {
-  const { data, isLoading, error } = useGetData<any>(
-    ["my-submition"],
-    "/answers/my-submition"
-  );
-  console.log(data?.data, "data");
+  const queryClient = useQueryClient();
   const [selectedCollection, setSelectedCollection] = useState<any>(null);
+
+  const { data, isLoading, error } = useGetData<any>(
+    ["my-submition-today"],
+    "/answers/my-submition?day=true"
+  );
+
+  const { mutate, isPending } = useMutation({
+    mutationFn: async (datas: string) => {
+      const response = await axiosInstance.delete<any>(
+        `/answers/delete-my-submition/${datas}`
+      );
+      return response.data;
+    },
+    onSuccess: (data: any) => {
+      showSuccessAlert(data.message);
+      queryClient.invalidateQueries({
+        queryKey: ["my-submition-today"],
+      });
+    },
+    onError: (err: AxiosError<{ message: string }>) => {
+      showErrorAlert(err?.message || "Login failed.");
+    },
+  });
+
+  const handleDelete = (id: string) => {
+    Swal.fire({
+      title: "Are you sure?",
+      text: "You won’t be able to revert this action!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#6c757d",
+      confirmButtonText: "Yes, delete it!",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        mutate(id);
+      }
+    });
+  };
 
   if (isLoading) return <p>Loading...</p>;
   return (
@@ -49,12 +92,11 @@ export default function page() {
       </div>
       <div className="p-4 space-y-4 relative z-10">
         {/* Recent Collections */}
-        <Card className="p-6 bg-white/95 backdrop-blur-sm shadow-sm rounded-2xl border-0">
+        <Card className="p-6 bg-white/95 backdrop-blur-sm shadow rounded-sm border-0">
           {data.data.map((collection, i) => (
             <Card
               key={collection.id}
               className="p-4 bg-white rounded-xl shadow-sm cursor-pointer hover:shadow-lg transition"
-              onClick={() => setSelectedCollection(collection)}
             >
               <div className="flex justify-between items-center">
                 <div className="flex gap-2 font-medium text-gray-800">
@@ -62,8 +104,18 @@ export default function page() {
                   {collection.name}
                 </div>
 
-                <div className="text-sm text-gray-500">
+                <div className="text-sm flex gap-5 text-gray-500">
                   {new Date(collection.createdAt).toLocaleString()}
+                  <div className="flex gap-3">
+                    <Trash
+                      onClick={() => handleDelete(collection?.id)}
+                      className="w-8 h-8 text-red-600"
+                    />
+                    <Eye
+                      onClick={() => setSelectedCollection(collection)}
+                      className="w-8 h-8 text-blue-600"
+                    />
+                  </div>
                 </div>
               </div>
             </Card>

@@ -10,12 +10,9 @@ import { useState } from "react";
 export default function DashboardPage() {
   const [showExitModal, setShowExitModal] = useState(false);
 
-  // ✅ Fetch profile
   const { data, isLoading, error } = useGetData<any>(["profile"], "/profile");
-  console.log(data, "data");
 
   if (isLoading) return <p>Loading...</p>;
-  console.log(error);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-blue-100 relative pb-20">
@@ -31,12 +28,10 @@ export default function DashboardPage() {
       </div>
 
       <div className="p-3 sm:p-4 relative z-10">
-        <Card className="p-4 sm:p-6 bg-white/95 backdrop-blur-sm shadow-md rounded-2xl border-0 transform  transition-all duration-300">
+        <Card className="p-4 sm:p-6 bg-white/95 backdrop-blur-sm shadow-sm rounded-md border-0 transform  transition-all duration-300">
           <div className="flex items-center space-x-3 sm:space-x-4">
-            <div className="w-16 h-16 sm:w-20 sm:h-20 bg-gradient-to-br from-purple-400 to-purple-600 rounded-full flex items-center justify-center shadow-lg flex-shrink-0">
-              <span className="text-white font-bold text-xl sm:text-2xl">
-                র
-              </span>
+            <div className="w-16 h-16 sm:w-20 sm:h-20 bg-gradient-to-br from-purple-400 to-purple-600 rounded-full flex items-center justify-center shadow-sm flex-shrink-0">
+              <span className="text-white font-bold text-xl sm:text-2xl"></span>
             </div>
             <div className="flex-1 min-w-0">
               <h2 className="font-bold text-lg sm:text-xl text-gray-800 mb-1 truncate">
@@ -53,11 +48,11 @@ export default function DashboardPage() {
         </Card>
       </div>
 
-      <div className="p-3 sm:p-4 grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 relative z-10">
+      <div className="p-3 sm:p-4 grid grid-cols-2 sm:grid-cols-2 gap-3 sm:gap-4 relative z-10">
         <Link href="/user/new-form">
-          <Card className="p-6 sm:p-8 bg-white/95 backdrop-blur-sm shadow-md hover:shadow-xl transition-all duration-300 cursor-pointer rounded-2xl border-0 transform ">
+          <Card className="p-6 sm:p-8 bg-white/95 backdrop-blur-sm shadow-sm hover:shadow-sm transition-all duration-300 cursor-pointer rounded-md border-0 transform ">
             <div className="text-center">
-              <div className="w-14 h-14 sm:w-16 sm:h-16 bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl flex items-center justify-center mx-auto mb-3 sm:mb-4 shadow-lg">
+              <div className="w-14 h-14 sm:w-16 sm:h-16 bg-gradient-to-br from-blue-500 to-blue-600 rounded-md flex items-center justify-center mx-auto mb-3 sm:mb-4 shadow-sm">
                 <FileText className="w-7 h-7 sm:w-8 sm:h-8 text-white" />
               </div>
               <p className="font-semibold text-gray-800 text-base sm:text-lg">
@@ -68,9 +63,9 @@ export default function DashboardPage() {
         </Link>
 
         <Link href="/user/todays-collection">
-          <Card className="p-6 sm:p-8 bg-white/95 backdrop-blur-sm shadow-md hover:shadow-xl transition-all duration-300 cursor-pointer rounded-2xl border-0 transform ">
+          <Card className="p-6 sm:p-8 bg-white/95 backdrop-blur-sm shadow-sm hover:shadow-sm transition-all duration-300 cursor-pointer rounded-md border-0 transform ">
             <div className="text-center">
-              <div className="w-14 h-14 sm:w-16 sm:h-16 bg-gradient-to-br from-green-500 to-green-600 rounded-2xl flex items-center justify-center mx-auto mb-3 sm:mb-4 shadow-lg">
+              <div className="w-14 h-14 sm:w-16 sm:h-16 bg-gradient-to-br from-green-500 to-green-600 rounded-md flex items-center justify-center mx-auto mb-3 sm:mb-4 shadow-sm">
                 <Calendar className="w-7 h-7 sm:w-8 sm:h-8 text-white" />
               </div>
               <p className="font-semibold text-gray-800 text-base sm:text-lg">
@@ -81,9 +76,9 @@ export default function DashboardPage() {
         </Link>
 
         <Link href="/user/all-forms">
-          <Card className="p-6 sm:p-8 bg-white/95 backdrop-blur-sm shadow-md hover:shadow-xl transition-all duration-300 cursor-pointer rounded-2xl border-0 transform ">
+          <Card className="p-6 sm:p-8 bg-white/95 backdrop-blur-sm shadow-sm hover:shadow-sm transition-all duration-300 cursor-pointer rounded-md border-0 transform ">
             <div className="text-center">
-              <div className="w-14 h-14 sm:w-16 sm:h-16 bg-gradient-to-br from-purple-500 to-purple-600 rounded-2xl flex items-center justify-center mx-auto mb-3 sm:mb-4 shadow-lg">
+              <div className="w-14 h-14 sm:w-16 sm:h-16 bg-gradient-to-br from-purple-500 to-purple-600 rounded-md flex items-center justify-center mx-auto mb-3 sm:mb-4 shadow-sm">
                 <List className="w-7 h-7 sm:w-8 sm:h-8 text-white" />
               </div>
               <p className="font-semibold text-gray-800 text-base sm:text-lg">
@@ -93,9 +88,9 @@ export default function DashboardPage() {
           </Card>
         </Link>
 
-        <Card className="p-6 sm:p-8 bg-white/95 backdrop-blur-sm shadow-md hover:shadow-xl transition-all duration-300 cursor-pointer rounded-2xl border-0 transform ">
+        <Card className="p-6 sm:p-8 bg-white/95 backdrop-blur-sm shadow-sm hover:shadow-sm transition-all duration-300 cursor-pointer rounded-md border-0 transform ">
           <div className="text-center">
-            <div className="w-14 h-14 sm:w-16 sm:h-16 bg-gradient-to-br from-orange-500 to-orange-600 rounded-2xl flex items-center justify-center mx-auto mb-3 sm:mb-4 shadow-lg">
+            <div className="w-14 h-14 sm:w-16 sm:h-16 bg-gradient-to-br from-orange-500 to-orange-600 rounded-md flex items-center justify-center mx-auto mb-3 sm:mb-4 shadow-sm">
               <BookOpen className="w-7 h-7 sm:w-8 sm:h-8 text-white" />
             </div>
             <p className="font-semibold text-gray-800 text-base sm:text-lg">

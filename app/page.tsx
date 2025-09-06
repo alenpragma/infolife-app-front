@@ -120,7 +120,7 @@ const page = () => {
                 </div>
 
                 <SubmitButton
-                  className=" border border-border1 border-darkGray w-full cursor-pointer"
+                  // className=" border border-border1 border-darkGray w-full cursor-pointer"
                   width="full"
                   label="Login"
                   isLoading={isPending}

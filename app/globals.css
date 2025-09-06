@@ -310,4 +310,27 @@
   pointer-events: auto;
 }
 
+
+.pageButton a {
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.paginationButton,
+.pageButton a {
+  width: 30px;
+  height: 30px;
+}
+
+@media only screen and (max-width: 600px) {
+
+  .paginationButton,
+  .pageButton a {
+    width: 20px;
+    height: 20px;
+  }
+}
+
 /* ********************* toast style */

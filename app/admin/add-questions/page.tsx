@@ -14,7 +14,14 @@ type Option = { value: string; text: string };
 
 type FormData = {
   text: string;
-  type: "TEXT" | "TEXTAREA" | "RADIO" | "CHECKBOX" | "CHECKBOX_GROUP" | "DATE";
+  type:
+    | "TEXT"
+    | "TEXTAREA"
+    | "RADIO"
+    | "CHECKBOX"
+    | "CHECKBOX_GROUP"
+    | "SELECT"
+    | "DATE";
   required: boolean;
   step: number;
   options: Option[];
@@ -127,6 +134,7 @@ export default function AddQuestionForm({
             <option value="RADIO">Radio</option>
             <option value="CHECKBOX">Checkbox</option>
             <option value="CHECKBOX_GROUP">Checkbox Group</option>
+            <option value="SELECT">SELECT</option>
             <option value="DATE">Date</option>
           </select>
           {errors.type && (
@@ -158,7 +166,9 @@ export default function AddQuestionForm({
         </div>
 
         {/* Options */}
-        {(selectedType === "RADIO" || selectedType === "CHECKBOX_GROUP") && (
+        {(selectedType === "RADIO" ||
+          selectedType === "CHECKBOX_GROUP" ||
+          selectedType === "SELECT") && (
           <div className="border p-3 rounded space-y-2">
             <label className="font-medium">Options</label>
             {fields.map((field, index) => (

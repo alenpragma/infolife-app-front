@@ -129,6 +129,9 @@ export const StepperForm = () => {
             case "DATE":
               initValues[f.name] = null;
               break;
+            case "SELECT":
+              initValues[f.name] = f.options?.[0]?.value || "";
+              break;
           }
         });
 
@@ -193,6 +196,13 @@ export const StepperForm = () => {
               message: `${f.label} is required`,
             });
             break;
+          case "SELECT":
+            if (f.required) {
+              shape[f.name] = z.string().min(1, `${f.label} is required`);
+            } else {
+              shape[f.name] = z.string().optional().or(z.literal(""));
+            }
+            break;
         }
       } else {
         switch (f.type) {
@@ -214,6 +224,9 @@ export const StepperForm = () => {
             break;
           case "DATE":
             shape[f.name] = z.coerce.date().optional().or(z.literal(null));
+            break;
+          case "SELECT":
+            shape[f.name] = z.string().optional().or(z.literal(""));
             break;
         }
       }
@@ -267,6 +280,13 @@ export const StepperForm = () => {
               message: `${f.label} is required`,
             });
             break;
+          case "SELECT":
+            if (shouldBeRequired) {
+              shape[f.name] = z.string().min(1, `${f.label} is required`);
+            } else {
+              shape[f.name] = z.string().optional().or(z.literal(""));
+            }
+            break;
         }
       } else {
         // Field is not required or not visible - make optional
@@ -289,6 +309,9 @@ export const StepperForm = () => {
             break;
           case "DATE":
             shape[f.name] = z.coerce.date().optional().or(z.literal(null));
+            break;
+          case "SELECT":
+            shape[f.name] = "";
             break;
         }
       }
@@ -321,7 +344,8 @@ export const StepperForm = () => {
                 <TextAreaField
                   name={field.name}
                   placeholder={field.placeholder}
-                  autoResize
+                  autoResize={true}
+                  resizable={true}
                   required={isRequired}
                 />
               );
@@ -339,6 +363,7 @@ export const StepperForm = () => {
                   name={field.name}
                   options={field.options!}
                   required={isRequired}
+                  className="w-full min-w-96"
                 />
               );
             case "CHECKBOX":
@@ -413,8 +438,8 @@ export const StepperForm = () => {
       });
 
       const response = await axiosInstance.post(`/qus/answer`, submissionData);
-      formRef.current.form.reset(); // <-- form clear here
-
+      formRef.current.form.reset();
+      setStep(1);
       showSuccessAlert("Form submitted successfully!");
     } catch (error) {
       showErrorAlert("Failed to submit form");
@@ -430,7 +455,7 @@ export const StepperForm = () => {
   if (loading && fields.length === 0) return <p>Loading form...</p>;
 
   return (
-    <Card className="bg-white shadow-sm rounded-2xl p-6 my-6 max-w-2xl mx-auto border">
+    <Card className="bg-white shadow-sm rounded-xl p-6 my-6 max-w-2xl mx-auto border">
       {/* Step indicators */}
       <div className="flex justify-between mb-6 relative">
         <div className="absolute top-1/2 left-0 right-0 h-1 bg-gray-200 -translate-y-1/2 -z-10"></div>

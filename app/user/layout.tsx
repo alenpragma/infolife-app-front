@@ -9,7 +9,7 @@ export default function AdminLayout({
   return (
     <>
       <TopNav />
-      <main className="pt-20 pb-24">{children}</main>
+      <main className="pt-10 pb-24">{children}</main>
       <UserBottomNav />
     </>
   );
