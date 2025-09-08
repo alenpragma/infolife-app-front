@@ -96,6 +96,7 @@ export const StepperForm = () => {
           options: q.options?.map((o: any) => ({
             value: o.value,
             text: o.text,
+            parent: o.parent,
           })),
           step: q.step,
           dependsOnQuestionId: q.dependsOnQuestionId,
@@ -131,6 +132,8 @@ export const StepperForm = () => {
               break;
             case "SELECT":
               initValues[f.name] = f.options?.[0]?.value || "";
+              // initValues[f.name] = "";
+
               break;
           }
         });
@@ -324,6 +327,18 @@ export const StepperForm = () => {
     if (!isFieldVisible(field, values)) return null;
 
     const isRequired = isFieldRequired(field, values);
+    let filteredOptions = field.options || [];
+    if (
+      field.type === "SELECT" &&
+      field.dependsOnQuestionId &&
+      !field.dependsOnValue
+    ) {
+      const parentValue = values[field.dependsOnQuestionId];
+
+      filteredOptions = field.options.filter(
+        (o: any) => o.parent == parentValue
+      );
+    }
 
     return (
       <div className="space-y-1">
@@ -357,15 +372,25 @@ export const StepperForm = () => {
                   required={isRequired}
                 />
               );
+            // case "SELECT":
+            //   return (
+            //     <SelectField
+            //       name={field.name}
+            //       options={field.options!}
+            //       required={isRequired}
+            //       className="w-full min-w-96"
+            //     />
+            //   );
             case "SELECT":
               return (
                 <SelectField
                   name={field.name}
-                  options={field.options!}
+                  options={filteredOptions}
                   required={isRequired}
                   className="w-full min-w-96"
                 />
               );
+
             case "CHECKBOX":
               return <CheckboxField name={field.label} required={isRequired} />;
             case "CHECKBOX_GROUP":

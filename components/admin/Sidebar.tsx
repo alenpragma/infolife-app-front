@@ -20,7 +20,7 @@ const Sidebar = ({ isOpen, setIsOpen }: SidebarProps) => {
     { label: "Questions", href: "/admin/questions" },
     { label: "Add Questions", href: "/admin/add-questions" },
     { label: "Submitions", href: "/admin/submitions" },
-    // { label: "Answers", href: "/admin/answers" },
+    { label: "Location", href: "/admin/location" },
   ];
 
   const handleLogout = () => {

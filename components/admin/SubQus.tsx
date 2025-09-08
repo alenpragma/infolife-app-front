@@ -127,9 +127,22 @@ export default function SubQus({ qus }) {
 
   const selectedType = watch("type");
 
-  const onSubmit = async (data: FormData) => {
-    console.log(data, "data");
-    return;
+  const onSubmit = async (data: FormData | any) => {
+    const optionsWithValue = data.options?.map((opt: any) => ({
+      value: opt.value || opt.text, // fallback to text
+      text: opt.text,
+    }));
+    const selectedAnswer = data[qus.id];
+
+    const payload = {
+      text: data.text,
+      step: Number(data.step),
+      required: Boolean(data.required),
+      type: data.type,
+      dependsOnQuestionId: qus.id,
+      dependsOnValue: selectedAnswer,
+      options: optionsWithValue,
+    };
 
     if (
       (data.type === "RADIO" || data.type === "CHECKBOX_GROUP") &&
@@ -141,7 +154,7 @@ export default function SubQus({ qus }) {
 
     setLoading(true);
     try {
-      await axiosInstance.post("/qus", data);
+      await axiosInstance.post("/qus", payload);
       showSuccessAlert("Question added successfully!");
       router.push("/admin/questions");
       reset();
