@@ -100,17 +100,13 @@ export const StepperForm = () => {
               text: o.text,
               parent: o.parent,
             })),
-            step: q.step,
+            step: Number(q.step), // ensure number
             dependsOnQuestionId: q.dependsOnQuestionId,
             dependsOnValue: q.dependsOnValue,
             createdAt: q.createdAt, // ensure API returns this field
+            serial: q?.serial ?? 100, // ensure number
           }))
-          .sort((a, b) => {
-            if (a.step !== b.step) return 0; // step same position এ রাখবে
-            return (
-              new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
-            );
-          });
+          .sort((a, b) => a.step - b.step || a.serial - b.serial); // sort by step first, then serial
 
         setFields(apiFields);
 
@@ -406,15 +402,7 @@ export const StepperForm = () => {
                   required={isRequired}
                 />
               );
-            // case "SELECT":
-            //   return (
-            //     <SelectField
-            //       name={field.name}
-            //       options={field.options!}
-            //       required={isRequired}
-            //       className="w-full min-w-96"
-            //     />
-            //   );
+
             case "SELECT":
               return (
                 <SelectField
@@ -435,7 +423,7 @@ export const StepperForm = () => {
               );
 
             case "CHECKBOX":
-              return <CheckboxField name={field.label} required={isRequired} />;
+              return <CheckboxField name={field.name} required={isRequired} />;
             case "CHECKBOX_GROUP":
               return (
                 <CheckboxGroupField
@@ -460,13 +448,18 @@ export const StepperForm = () => {
     try {
       // Get current form values
       const values = formRef.current.form.getValues();
+      console.log(values, "values");
+
       setCurrentValues(values);
 
       // Trigger validation for all required visible fields in current step
       const currentStepFields = fields.filter((f) => f.step === step);
+      console.log(currentStepFields);
+
       const fieldNamesToValidate = currentStepFields
         .filter((f) => isFieldRequired(f, formRef.current!.form.getValues()))
         .map((f) => f.name);
+      console.log(fieldNamesToValidate, "fieldNamesToValidate");
 
       if (fieldNamesToValidate.length === 0) return true;
 
@@ -482,6 +475,8 @@ export const StepperForm = () => {
 
   const handleNext = async () => {
     const isValid = await validateCurrentStep();
+    console.log(isValid);
+
     if (isValid) {
       setStep(step + 1);
     } else {
