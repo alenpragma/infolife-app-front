@@ -63,6 +63,9 @@ const UpdateUserPage = () => {
     name: data?.name || "",
     email: data?.email || "",
     phone: data?.phone || "",
+    img: data?.img || "",
+    position: data?.position || "",
+    location: data?.location || "",
     password: undefined,
   };
 
@@ -91,9 +94,18 @@ const UpdateUserPage = () => {
                 placeholder="Enter email"
                 type="email"
               />
-              <TextField name="phone" label="Phone" placeholder="Enter phone" />
               <TextField
-                name="profileImage"
+                name="location"
+                label="Location"
+                placeholder="Enter location"
+              />
+              <TextField
+                name="position"
+                label="Position"
+                placeholder="Enter position"
+              />
+              <TextField
+                name="img"
                 label="Profile Image URL"
                 placeholder="Enter URL"
               />

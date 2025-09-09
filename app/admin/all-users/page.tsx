@@ -1,6 +1,7 @@
 "use client";
 
 import axiosInstance from "@/lib/axiosConfig/axiosConfig";
+import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
@@ -9,6 +10,9 @@ type User = {
   name: string;
   email: string;
   role: string;
+  position: string;
+  img: string;
+  location: string;
 };
 
 const AllUsersPage = () => {
@@ -64,15 +68,32 @@ const AllUsersPage = () => {
         <p>No users found.</p>
       ) : (
         <div className="space-y-4">
-          {users.map((user) => (
+          {users?.map((user) => (
             <div
               key={user.id}
               className="p-4 bg-white shadow rounded-lg border flex justify-between items-center"
             >
-              <div>
-                <p className="font-semibold">{user.name}</p>
-                <p className="text-sm text-gray-600">{user.email}</p>
-                <p className="text-sm text-gray-600">Role: {user.role}</p>
+              <div className="flex gap-5">
+                <div>
+                  <Image
+                    alt=""
+                    src={user.img}
+                    width={100}
+                    height={100}
+                    className="rounded-full"
+                  ></Image>
+                </div>
+                <div>
+                  <p className="font-semibold">{user.name}</p>
+                  <p className="text-sm text-gray-600">{user.email}</p>
+                  <p className="text-sm text-gray-600">Role: {user.role}</p>
+                  <p className="text-sm text-gray-600">
+                    Location: {user.location}
+                  </p>
+                  <p className="text-sm text-gray-600">
+                    Position: {user.position}
+                  </p>
+                </div>
               </div>
               <div className="flex gap-2">
                 <Link

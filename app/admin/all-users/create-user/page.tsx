@@ -22,7 +22,10 @@ const initialValues: FormType = {
   name: "",
   email: "",
   phone: "",
+  img: "",
   password: "",
+  location: "",
+  position: "",
 };
 
 const CreateUserPage = () => {
@@ -73,9 +76,19 @@ const CreateUserPage = () => {
                 placeholder="Enter email"
                 type="email"
               />
+              <TextField
+                name="position"
+                label="Position"
+                placeholder="Enter position"
+              />
+              <TextField
+                name="location"
+                label="location"
+                placeholder="Enter location"
+              />
               <TextField name="phone" label="Phone" placeholder="Enter phone" />
               <TextField
-                name="profileImage"
+                name="img"
                 label="Profile Image URL"
                 placeholder="Enter URL"
               />

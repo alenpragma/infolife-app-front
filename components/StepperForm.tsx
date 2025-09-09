@@ -87,22 +87,30 @@ export const StepperForm = () => {
       try {
         setLoading(true);
         const resp = await axiosInstance.get("/qus");
-        const apiFields: Field[] = resp.data.data.map((q: any) => ({
-          id: q.id,
-          name: q.id,
-          label: q.text,
-          type: q.type,
-          required: q.required,
-          placeholder: q.placeholder ?? "",
-          options: q.options?.map((o: any) => ({
-            value: o.value,
-            text: o.text,
-            parent: o.parent,
-          })),
-          step: q.step,
-          dependsOnQuestionId: q.dependsOnQuestionId,
-          dependsOnValue: q.dependsOnValue,
-        }));
+        const apiFields: Field[] = resp.data.data
+          .map((q: any) => ({
+            id: q.id,
+            name: q.id,
+            label: q.text,
+            type: q.type,
+            required: q.required,
+            placeholder: q.placeholder ?? "",
+            options: q.options?.map((o: any) => ({
+              value: o.value,
+              text: o.text,
+              parent: o.parent,
+            })),
+            step: q.step,
+            dependsOnQuestionId: q.dependsOnQuestionId,
+            dependsOnValue: q.dependsOnValue,
+            createdAt: q.createdAt, // ensure API returns this field
+          }))
+          .sort((a, b) => {
+            if (a.step !== b.step) return 0; // step same position এ রাখবে
+            return (
+              new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
+            );
+          });
 
         setFields(apiFields);
 

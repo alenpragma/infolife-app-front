@@ -4,6 +4,7 @@ import { ExitModal } from "@/components/exit-modal";
 import { Card } from "@/components/ui/card";
 import { useGetData } from "@/lib/axiosConfig/FetchData";
 import { BookOpen, Calendar, FileText, List } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 
@@ -31,8 +32,15 @@ export default function DashboardPage() {
         <Card className="p-4 sm:p-6 bg-white/95 backdrop-blur-sm shadow-sm rounded-md border-0 transform  transition-all duration-300">
           <div className="flex items-center space-x-3 sm:space-x-4">
             <div className="w-16 h-16 sm:w-20 sm:h-20 bg-gradient-to-br from-purple-400 to-purple-600 rounded-full flex items-center justify-center shadow-sm flex-shrink-0">
-              <span className="text-white font-bold text-xl sm:text-2xl"></span>
+              <Image
+                alt=""
+                src={data.img}
+                width={100}
+                height={100}
+                className="rounded-full"
+              ></Image>
             </div>
+
             <div className="flex-1 min-w-0">
               <h2 className="font-bold text-lg sm:text-xl text-gray-800 mb-1 truncate">
                 {data.name}

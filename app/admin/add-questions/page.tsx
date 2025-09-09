@@ -25,6 +25,7 @@ type FormData = {
     | "DATE";
   required: boolean;
   step: number;
+  serial?: number;
   options: Option[];
 };
 
@@ -78,6 +79,7 @@ export default function AddQuestionForm({
 
     // return;
     data.step = Number(data.step);
+    data.serial = Number(data.serial);
 
     if (
       (data.type === "RADIO" || data.type === "CHECKBOX_GROUP") &&
@@ -169,6 +171,21 @@ export default function AddQuestionForm({
           />
           {errors.step && (
             <p className="text-red-500 text-sm mt-1">{errors.step.message}</p>
+          )}
+        </div>
+
+        <div>
+          <label className="block font-medium mb-1">Serial</label>
+          <input
+            type="number"
+            {...register("serial", {
+              required: "Step is required",
+              min: { value: 1, message: "Minimum step is 1" },
+            })}
+            className="w-full border rounded px-3 py-2"
+          />
+          {errors.serial && (
+            <p className="text-red-500 text-sm mt-1">{errors.serial.message}</p>
           )}
         </div>
 
