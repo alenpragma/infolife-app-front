@@ -44,7 +44,7 @@ const Sidebar = ({ isOpen, setIsOpen }: SidebarProps) => {
 
       {/* Sidebar */}
       <aside
-        className={`fixed top-0 left-0 h-full w-72 bg-gray-900 text-white flex flex-col p-4 z-50
+        className={`fixed max-w-screen top-0 left-0 h-full  bg-gray-900 text-white flex flex-col p-4 z-50
           transform transition-transform duration-300 ease-in-out
           ${isOpen ? "translate-x-0" : "-translate-x-full"} md:translate-x-0`}
       >
@@ -52,7 +52,7 @@ const Sidebar = ({ isOpen, setIsOpen }: SidebarProps) => {
           Admin Panel
         </h2>
 
-        <nav className="flex-1">
+        <nav className="flex-1 mt-16 md:mt-0">
           <ul className="flex flex-col gap-2">
             {menuItems.map((item) => (
               <li key={item.href}>

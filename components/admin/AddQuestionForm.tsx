@@ -10,7 +10,7 @@ import { useEffect, useState } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
 import { toast } from "sonner";
 
-type Option = { value: string; text: string };
+type Option = { value: string; text: string; parent: string };
 
 type FormData = {
   text: string;
@@ -21,7 +21,9 @@ type FormData = {
     | "CHECKBOX"
     | "CHECKBOX_GROUP"
     | "DATE"
-    | "SELECT";
+    | "SELECT"
+    | "SELECT_GROUP";
+
   required: boolean;
   step: number;
   options: Option[];
@@ -51,7 +53,7 @@ export default function AddQuestionForm({
       type: "TEXT",
       required: false,
       step: 1,
-      options: [{ value: "", text: "" }],
+      options: [{ value: "", text: "", parent: "" }],
     },
   });
 
@@ -164,6 +166,7 @@ export default function AddQuestionForm({
         {/* Options */}
         {(selectedType === "RADIO" ||
           selectedType === "CHECKBOX_GROUP" ||
+          selectedType === "SELECT_GROUP" ||
           selectedType === "SELECT") && (
           <div className="border p-3 rounded space-y-2">
             <label className="font-medium">Options</label>
@@ -183,6 +186,16 @@ export default function AddQuestionForm({
                   placeholder="Text"
                   className="border rounded px-2 py-1 w-1/2"
                 />
+
+                {/* {selectedType === "SELECT_GROUP" && (
+                  <input
+                    {...register(`options.${index}.parent` as const, {
+                      required: "Parent is required for SELECT_GROUP",
+                    })}
+                    placeholder="Parent"
+                    className="border rounded px-2 py-1 w-1/3"
+                  />
+                )} */}
                 <button
                   type="button"
                   onClick={() => remove(index)}
@@ -194,7 +207,7 @@ export default function AddQuestionForm({
             ))}
             <button
               type="button"
-              onClick={() => append({ value: "", text: "" })}
+              onClick={() => append({ value: "", text: "", parent: "" })}
               className="bg-sky-700 text-white px-3 py-1 rounded mt-2"
             >
               Add Option

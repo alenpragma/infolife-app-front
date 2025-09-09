@@ -11,7 +11,7 @@ import axiosInstance from "@/lib/axiosConfig/axiosConfig";
 import { useRouter } from "next/navigation";
 import { useFieldArray, useForm } from "react-hook-form";
 
-type Option = { value: string; text: string };
+type Option = { value: string; text: string; parent: string };
 
 type FormData = {
   text: string;
@@ -20,6 +20,7 @@ type FormData = {
     | "TEXTAREA"
     | "RADIO"
     | "SELECT"
+    | "SELECT_GROUP"
     | "CHECKBOX"
     | "CHECKBOX_GROUP"
     | "DATE";
@@ -113,7 +114,7 @@ export default function SubQus({ qus }) {
       type: "TEXT",
       required: false,
       step: 1,
-      options: [{ value: "", text: "" }],
+      options: [{ value: "", text: "", parent: "" }],
     },
   });
 
@@ -128,11 +129,15 @@ export default function SubQus({ qus }) {
   const selectedType = watch("type");
 
   const onSubmit = async (data: FormData | any) => {
-    const optionsWithValue = data.options?.map((opt: any) => ({
-      value: opt.value || opt.text, // fallback to text
-      text: opt.text,
-    }));
+    console.log(data, "data");
+
     const selectedAnswer = data[qus.id];
+
+    const optionsWithValue = data.options?.map((opt: any) => ({
+      value: opt.value,
+      text: opt.text,
+      parent: opt.parent,
+    }));
 
     const payload = {
       text: data.text,
@@ -140,7 +145,7 @@ export default function SubQus({ qus }) {
       required: Boolean(data.required),
       type: data.type,
       dependsOnQuestionId: qus.id,
-      dependsOnValue: selectedAnswer,
+      dependsOnValue: data.type == "SELECT_GROUP" ? "" : selectedAnswer,
       options: optionsWithValue,
     };
 
@@ -166,7 +171,7 @@ export default function SubQus({ qus }) {
 
   return (
     <div className="p-6 max-w-2xl mx-auto">
-      {/* <h1 className="text-2xl font-bold mb-4">{questionData.title}</h1> */}
+      <h1 className="text-2xl font-bold mb-4">{"Sub Qus"}</h1>
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
         <div key={qus.id} className="flex flex-col">
@@ -223,6 +228,7 @@ export default function SubQus({ qus }) {
             <option value="CHECKBOX">Checkbox</option>
             <option value="CHECKBOX_GROUP">Checkbox Group</option>
             <option value="SELECT">Select</option>
+            <option value="SELECT_GROUP">SELECT GROUP</option>
             <option value="DATE">Date</option>
           </select>
           {errors.type && (
@@ -248,6 +254,7 @@ export default function SubQus({ qus }) {
             })}
             className="w-full border rounded px-3 py-2"
           />
+
           {errors.step && (
             <p className="text-red-500 text-sm mt-1">{errors.step.message}</p>
           )}
@@ -256,11 +263,19 @@ export default function SubQus({ qus }) {
         {/* Options */}
         {(selectedType === "RADIO" ||
           selectedType === "SELECT" ||
+          selectedType === "SELECT_GROUP" ||
           selectedType === "CHECKBOX_GROUP") && (
           <div className="border p-3 rounded space-y-2">
             <label className="font-medium">Options</label>
             {fields.map((field, index) => (
               <div key={field.id} className="flex gap-2 items-center">
+                <input
+                  {...register(`options.${index}.value` as const, {
+                    required: "Option value is required",
+                  })}
+                  placeholder="value"
+                  className="border rounded px-2 py-1 w-1/2"
+                />
                 <input
                   {...register(`options.${index}.text` as const, {
                     required: "Option text is required",
@@ -268,6 +283,15 @@ export default function SubQus({ qus }) {
                   placeholder="Text"
                   className="border rounded px-2 py-1 w-1/2"
                 />
+                {selectedType === "SELECT_GROUP" && (
+                  <input
+                    {...register(`options.${index}.parent` as const, {
+                      required: "Option text is required",
+                    })}
+                    placeholder="parent"
+                    className="border rounded px-2 py-1 w-1/2"
+                  />
+                )}
                 <button
                   type="button"
                   onClick={() => remove(index)}
@@ -279,7 +303,7 @@ export default function SubQus({ qus }) {
             ))}
             <button
               type="button"
-              onClick={() => append({ value: "", text: "" })}
+              onClick={() => append({ value: "", text: "", parent: "" })}
               className="bg-sky-700 text-white px-3 py-1 rounded mt-2"
             >
               Add Option

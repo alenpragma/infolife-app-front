@@ -67,13 +67,13 @@ export default function Page() {
   }
 
   return (
-    <div className="p-6">
+    <div className="p-2 lg:p-6">
       <h2 className="text-2xl font-bold mb-4">Questions</h2>
       <div className="space-y-4">
         {data?.map((q) => (
           <div
             key={q.id}
-            className="p-4 bg-white shadow rounded-lg border flex justify-between items-center"
+            className="p-4 gap-4 bg-white shadow rounded-lg border flex justify-between items-center"
           >
             <div>
               <h3 className="font-semibold">{q.text}</h3>
@@ -83,13 +83,17 @@ export default function Page() {
               </p>
               <p className="text-sm text-gray-600">Step: {q.step}</p>
             </div>
-            <div className="flex gap-5">
-              <Link
-                href={`/admin/add-sub-questions/${q.id}`}
-                className="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600 transition"
-              >
-                Add sub Qus
-              </Link>
+            <div className="flex flex-col lg:flex-row gap-2">
+              {(q.type == "RADIO" ||
+                q.type == "CHECKBOX" ||
+                q.type == "SELECT") && (
+                <Link
+                  href={`/admin/add-sub-questions/${q.id}`}
+                  className="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600 transition"
+                >
+                  Add sub qus
+                </Link>
+              )}
 
               <Link
                 href={`/admin/questions/${q.id}`}
@@ -97,12 +101,12 @@ export default function Page() {
               >
                 Update
               </Link>
-              <p
+              <button
                 onClick={() => handleDelete(q.id)}
                 className="cursor-pointer border border-red-600 p-1 rounded-sm text-red-500 hover:underline"
               >
                 Delete
-              </p>
+              </button>
             </div>
           </div>
         ))}

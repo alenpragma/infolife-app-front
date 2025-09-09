@@ -10,7 +10,7 @@ import { useEffect, useState } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
 import { toast } from "sonner";
 
-type Option = { value: string; text: string };
+type Option = { value: string; text: string; parent: string };
 
 type FormData = {
   text: string;
@@ -21,6 +21,7 @@ type FormData = {
     | "CHECKBOX"
     | "CHECKBOX_GROUP"
     | "SELECT"
+    | "SELECT_GROUP"
     | "DATE";
   required: boolean;
   step: number;
@@ -38,6 +39,8 @@ export default function AddQuestionForm({
   questionId,
   isUpdate = false,
 }: AddQuestionFormProps) {
+  console.log(initialData, "initialData");
+
   const {
     register,
     handleSubmit,
@@ -51,7 +54,7 @@ export default function AddQuestionForm({
       type: "TEXT",
       required: false,
       step: 1,
-      options: [{ value: "", text: "" }],
+      options: [{ value: "", text: "", parent: "" }],
     },
   });
 
@@ -71,6 +74,9 @@ export default function AddQuestionForm({
   }, [initialData, reset]);
 
   const onSubmit = async (data: FormData) => {
+    console.log(data, "data");
+
+    // return;
     data.step = Number(data.step);
 
     if (
@@ -135,6 +141,7 @@ export default function AddQuestionForm({
             <option value="CHECKBOX">Checkbox</option>
             <option value="CHECKBOX_GROUP">Checkbox Group</option>
             <option value="SELECT">SELECT</option>
+            <option value="SELECT_GROUP">SELECT_GROUP</option>
             <option value="DATE">Date</option>
           </select>
           {errors.type && (
@@ -168,6 +175,7 @@ export default function AddQuestionForm({
         {/* Options */}
         {(selectedType === "RADIO" ||
           selectedType === "CHECKBOX_GROUP" ||
+          selectedType === "SELECT_GROUP" ||
           selectedType === "SELECT") && (
           <div className="border p-3 rounded space-y-2">
             <label className="font-medium">Options</label>
@@ -187,6 +195,17 @@ export default function AddQuestionForm({
                   placeholder="Text"
                   className="border rounded px-2 py-1 w-1/2"
                 />
+
+                {selectedType === "SELECT_GROUP" && (
+                  <input
+                    {...register(`options.${index}.parent` as const, {
+                      required: "Option text is required",
+                    })}
+                    placeholder="parent"
+                    className="border rounded px-2 py-1 w-1/2"
+                  />
+                )}
+
                 <button
                   type="button"
                   onClick={() => remove(index)}
@@ -198,7 +217,7 @@ export default function AddQuestionForm({
             ))}
             <button
               type="button"
-              onClick={() => append({ value: "", text: "" })}
+              onClick={() => append({ value: "", text: "", parent: "" })}
               className="bg-sky-700 text-white px-3 py-1 rounded mt-2"
             >
               Add Option
@@ -213,7 +232,6 @@ export default function AddQuestionForm({
             loading ? "bg-green-500" : "bg-green-600"
           } text-white px-4 py-2 rounded mt-4`}
         >
-          {/* {isUpdate ? "Update Question" : "Add Question"} */}
           {isUpdate ? "Update Question" : "Add Question"}
         </button>
       </form>

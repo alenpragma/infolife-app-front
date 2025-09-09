@@ -30,6 +30,7 @@ export type Field = {
     | "CHECKBOX"
     | "CHECKBOX_GROUP"
     | "DATE"
+    | "SELECT_GROUP"
     | "SELECT";
   required?: boolean;
   placeholder?: string;
@@ -130,9 +131,14 @@ export const StepperForm = () => {
             case "DATE":
               initValues[f.name] = null;
               break;
-            case "SELECT":
+            case "SELECT_GROUP":
               initValues[f.name] = f.options?.[0]?.value || "";
               // initValues[f.name] = "";
+
+              break;
+            case "SELECT":
+              // initValues[f.name] = f.options?.[0]?.value || "";
+              initValues[f.name] = "";
 
               break;
           }
@@ -199,6 +205,13 @@ export const StepperForm = () => {
               message: `${f.label} is required`,
             });
             break;
+          case "SELECT_GROUP":
+            if (f.required) {
+              shape[f.name] = z.string().min(1, `${f.label} is required`);
+            } else {
+              shape[f.name] = z.string().optional().or(z.literal(""));
+            }
+            break;
           case "SELECT":
             if (f.required) {
               shape[f.name] = z.string().min(1, `${f.label} is required`);
@@ -227,6 +240,9 @@ export const StepperForm = () => {
             break;
           case "DATE":
             shape[f.name] = z.coerce.date().optional().or(z.literal(null));
+            break;
+          case "SELECT_GROUP":
+            shape[f.name] = z.string().optional().or(z.literal(""));
             break;
           case "SELECT":
             shape[f.name] = z.string().optional().or(z.literal(""));
@@ -283,6 +299,13 @@ export const StepperForm = () => {
               message: `${f.label} is required`,
             });
             break;
+          case "SELECT_GROUP":
+            if (shouldBeRequired) {
+              shape[f.name] = z.string().min(1, `${f.label} is required`);
+            } else {
+              shape[f.name] = z.string().optional().or(z.literal(""));
+            }
+            break;
           case "SELECT":
             if (shouldBeRequired) {
               shape[f.name] = z.string().min(1, `${f.label} is required`);
@@ -313,6 +336,9 @@ export const StepperForm = () => {
           case "DATE":
             shape[f.name] = z.coerce.date().optional().or(z.literal(null));
             break;
+          case "SELECT_GROUP":
+            shape[f.name] = "";
+            break;
           case "SELECT":
             shape[f.name] = "";
             break;
@@ -329,7 +355,7 @@ export const StepperForm = () => {
     const isRequired = isFieldRequired(field, values);
     let filteredOptions = field.options || [];
     if (
-      field.type === "SELECT" &&
+      field.type === "SELECT_GROUP" &&
       field.dependsOnQuestionId &&
       !field.dependsOnValue
     ) {
@@ -382,6 +408,15 @@ export const StepperForm = () => {
             //     />
             //   );
             case "SELECT":
+              return (
+                <SelectField
+                  name={field.name}
+                  options={filteredOptions}
+                  required={isRequired}
+                  className="w-full min-w-96"
+                />
+              );
+            case "SELECT_GROUP":
               return (
                 <SelectField
                   name={field.name}
