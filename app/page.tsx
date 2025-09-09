@@ -69,7 +69,7 @@ const page = () => {
         <div className="flex justify-center items-center w-full mb-3">
           <Link href="/">
             <Image
-              src="/images/logo/logo.png"
+              src="/edulife-logo.png"
               alt="Logo"
               className="w-28 md:w-44"
               width={500}
@@ -78,64 +78,67 @@ const page = () => {
             />
           </Link>
         </div>
-        <Card className="w-full shadow-xl border md:rounded-xl border-border1 border-whiteGray rounded-md  bg-white/10  text-white md:w-2/5 mx-auto">
-          <CardHeader>
-            <CardTitle className="text-2xl text-black font-semibold mt-4 text-center">
-              Login
-            </CardTitle>
-          </CardHeader>
 
-          <CardContent>
-            <GenericForm
-              schema={loginSchema}
-              initialValues={initialValues}
-              onSubmit={handleSubmit}
-              ref={formRef}
-            >
-              <div className="space-y-4">
-                <TextField
-                  name="email"
-                  label="Email"
-                  type="email"
-                  placeholder="Enter your email "
-                  //   inputClass="px-3 px-3"
-                  className="text-black"
-                />
-                <div className="relative">
-                  <PasswordField
-                    name="password"
-                    label="Password"
-                    placeholder="Enter your password"
+        <div className="flex justify-center items-center min-h-screen -mt-18">
+          <Card className="w-full mt-5 shadow-xl border md:rounded-xl border-border1 border-whiteGray rounded-md  bg-white/10  text-white md:w-2/5 mx-auto">
+            <CardHeader>
+              <CardTitle className="text-2xl text-black font-semibold mt-4 text-center">
+                Login
+              </CardTitle>
+            </CardHeader>
+
+            <CardContent>
+              <GenericForm
+                schema={loginSchema}
+                initialValues={initialValues}
+                onSubmit={handleSubmit}
+                ref={formRef}
+              >
+                <div className="space-y-4">
+                  <TextField
+                    name="email"
+                    label="Email"
+                    type="email"
+                    placeholder="Enter your email "
+                    //   inputClass="px-3 px-3"
                     className="text-black"
                   />
+                  <div className="relative">
+                    <PasswordField
+                      name="password"
+                      label="Password"
+                      placeholder="Enter your password"
+                      className="text-black"
+                    />
 
-                  <div className="w-full text-end">
-                    <Link
-                      className="text-end text-[14px] font-medium "
-                      href="/forgot-password"
-                    >
-                      Forgot Password?
-                    </Link>
+                    <div className="w-full text-end">
+                      <Link
+                        className="text-end text-[14px] font-medium "
+                        href="/forgot-password"
+                      >
+                        Forgot Password?
+                      </Link>
+                    </div>
                   </div>
-                </div>
 
-                <SubmitButton
-                  // className=" border border-border1 border-darkGray w-full cursor-pointer"
-                  width="full"
-                  label="Login"
-                  isLoading={isPending}
-                  loadingLabel="Processing.."
-                />
-              </div>
-            </GenericForm>
-            <p className="text-center mt-2 ">
-              Do you {`havn't`} an account?{" "}
-              <Link href="/sign-up" className="text-brand-gold">
-                Sign Up
-              </Link>
-            </p>
-          </CardContent>
-        </Card>
+                  <SubmitButton
+                    // className=" border border-border1 border-darkGray w-full cursor-pointer"
+                    width="full"
+                    label="Login"
+                    isLoading={isPending}
+                    loadingLabel="Processing.."
+                  />
+                </div>
+              </GenericForm>
+              <p className="text-center mt-2 ">
+                Do you {`havn't`} an account?{" "}
+                <Link href="/sign-up" className="text-brand-gold">
+                  Sign Up
+                </Link>
+              </p>
+            </CardContent>
+          </Card>
+        </div>
       </div>
     </>
   );

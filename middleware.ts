@@ -5,8 +5,11 @@ export function middleware(request: NextRequest) {
   const role = request.cookies.get("role")?.value;
   const { pathname } = request.nextUrl;
 
-  if (!token && (pathname.startsWith("/user") || pathname.startsWith("/admin"))) {
-    return NextResponse.redirect(new URL("/", request.url));
+  if (!token) {
+    if (pathname !== "/") {
+      return NextResponse.redirect(new URL("/", request.url));
+    }
+    return NextResponse.next();
   }
 
   if (pathname === "/") {
