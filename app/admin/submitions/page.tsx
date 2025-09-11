@@ -1,14 +1,13 @@
 "use client";
 
 import PaginationButtons from "@/components/PaginationButtons";
+import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import axiosInstance from "@/lib/axiosConfig/axiosConfig";
-import { formatData } from "@/lib/utils/formatData";
-import jsPDF from "jspdf";
 import "jspdf-autotable";
-import autoTable from "jspdf-autotable";
 import { X } from "lucide-react";
 import { useEffect, useState } from "react";
+import DownloadTableCSV from "./DownloadTableCSV";
 
 const Page = () => {
   const [data, setData] = useState<any[]>([]);
@@ -53,45 +52,6 @@ const Page = () => {
     fetchUsers();
   }, [currentPage]);
 
-  const generatePDF = (data: any[]) => {
-    if (!data.length) return;
-
-    const doc = new jsPDF();
-
-    // Title
-    doc.setFontSize(18);
-    doc.text("Survey Submissions", 14, 22);
-
-    // Headers
-    const headers = [
-      "Submit by",
-      "Survey user",
-      ...data[0].surveyResponse.map((resp: any) => resp.question.text),
-    ];
-
-    // Rows
-    const rows = data.map((d) => [
-      `${d.user.email} (${d.user.name})`,
-      d.name,
-      ...d.surveyResponse.map((resp: any) => resp.answerText || "-"),
-    ]);
-
-    // Add table using autoTable
-    autoTable(doc, {
-      head: [headers],
-      body: rows,
-      startY: 30,
-      styles: { fontSize: 10, cellPadding: 2 },
-      headStyles: { fillColor: [30, 144, 255] },
-    });
-
-    // Open PDF in new tab
-    doc.output("dataurlnewwindow");
-
-    // Download PDF (optional)
-    // doc.save("survey_submissions.pdf");
-  };
-
   if (loading) return <p>Loading...</p>;
   if (error) return <p className="text-red-500">{error}</p>;
 
@@ -99,12 +59,14 @@ const Page = () => {
     <div>
       <h2 className="text-xl font-bold mb-4">Submition</h2>
       <div>
-        <button
-          onClick={() => generatePDF(data)}
+        {/* <button
+          // onClick={() => downloadTablePDF(data)}
           className="bg-blue-600 text-white px-4 py-2 rounded mb-4"
         >
-          View / Download PDF
-        </button>
+          Download PDF
+        </button> */}
+
+        <DownloadTableCSV data={data} />
         <div className="max-w-full flex   mb-4 relative">
           <div className="flex gap-2 mb-4 items-center">
             <Input
@@ -138,37 +100,76 @@ const Page = () => {
       </div>
 
       <div className="overflow-x-auto mt-5">
-        <table className="min-w-full bg-white/95 backdrop-blur-sm shadow-md rounded-2xl border-collapse">
+        <table className="min-w-full text-left bg-white/95 backdrop-blur-sm shadow-md rounded-2xl border-collapse">
           <thead>
             <tr>
-              <th className="py-3 px-5">No</th>
-              <th className="py-3 px-5">Date</th>
-              <th className="py-3 px-5">Submit by</th>
-              <th className="py-3 px-5">Survey user</th>
-              {data[0]?.surveyResponse?.map((resp: any) => (
-                <th key={resp.id} className="py-3 px-5">
-                  {resp.question.text}
-                </th>
-              ))}
+              <th className="py-3 text-left">No</th>
+              <th className="py-3 text-left">Date</th>
+              <th className="py-3 text-left">Survey By</th>
+              <th className="py-3 text-left">Guardian Name</th>
+              <th className="py-3 text-left">Mobile</th>
+              <th className="py-3 text-left">Alternative Mobile</th>
+              <th className="py-3 text-left">upazila</th>
+              <th className="py-3 text-left">Area</th>
+              <th className="py-3 text-left">More</th>
             </tr>
           </thead>
           <tbody>
-            {data.map((d, i) => (
-              <tr key={d.id} className="border-b">
-                <td className="py-3 px-5">{i + 1}</td>
-                <td className="py-3 px-5">{formatData(d.createdAt)}</td>
+            {data.map((d, i) => {
+              const surveyResponse = d.surveyResponse || [];
 
-                <td className="py-3 px-5">
-                  {d.user.email} <br /> {d.user.name}
-                </td>
-                <td className="py-3 px-5">{d.name}</td>
-                {d.surveyResponse?.map((resp: any) => (
-                  <td key={resp.id} className="py-3 px-5">
-                    {resp.answerText || "-"}
+              const guardian = surveyResponse.find(
+                (a: any) => a.question.text.trim() == "Guardian Name"
+              );
+
+              const mobile = surveyResponse.find(
+                (a: any) => a.question.text.trim() == "Mobile"
+              );
+
+              const altMobile = surveyResponse.find(
+                (a: any) => a.question.text.trim() == "Alternative Mobile"
+              );
+
+              const upjela = surveyResponse.find(
+                (a: any) => a.question.text.trim() == "Upazila"
+              );
+
+              const area = surveyResponse.find(
+                (a: any) => a.question.text.trim() == "Area"
+              );
+
+              return (
+                <tr key={d.id} className="border-b">
+                  <td className="py-3 text-left px-5">{i + 1}</td>
+                  <td className="py-3 text-left px-5">
+                    {new Date(d.createdAt).toLocaleDateString()}
                   </td>
-                ))}
-              </tr>
-            ))}
+                  <td className="py-3 text-left px-5">
+                    {d.user.email} <br /> {d.user.name}
+                  </td>
+                  <td className="py-3 text-left px-5">
+                    {guardian?.answerText || "-"}
+                  </td>
+                  <td className="py-3 text-left px-5">
+                    {mobile?.answerText || "-"}
+                  </td>
+                  <td className="py-3 text-left px-5">
+                    {altMobile?.answerText || "-"}
+                  </td>
+                  <td className="py-3 text-left px-5">
+                    {upjela?.answerText || "-"}
+                  </td>
+                  <td className="py-3 text-left px-5">
+                    {area?.answerText || "-"}
+                  </td>
+                  <td className="py-3 text-left px-5">
+                    <Button size="sm" onClick={() => setSelectedCollection(d)}>
+                      View All
+                    </Button>
+                  </td>
+                </tr>
+              );
+            })}
           </tbody>
         </table>
       </div>
