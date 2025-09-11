@@ -1,7 +1,13 @@
 "use client";
 
+import PaginationButtons from "@/components/PaginationButtons";
+import { Input } from "@/components/ui/input";
 import axiosInstance from "@/lib/axiosConfig/axiosConfig";
-import { X } from "lucide-react"; // যদি icon ব্যবহার হয়
+import { formatData } from "@/lib/utils/formatData";
+import jsPDF from "jspdf";
+import "jspdf-autotable";
+import autoTable from "jspdf-autotable";
+import { X } from "lucide-react";
 import { useEffect, useState } from "react";
 
 const Page = () => {
@@ -9,12 +15,32 @@ const Page = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [selectedCollection, setSelectedCollection] = useState<any>(null);
+  const [currentPage, setCurrentPage] = useState(0);
+  const [perPage, setparePage] = useState(25);
+  const [search, setSearch] = useState("");
+  const [fromDate, setFromDate] = useState("");
+  const [toDate, setToDate] = useState("");
+
+  const [meta, setMeta] = useState({
+    total: 1,
+    page: 1,
+    limit: 1,
+  });
 
   const fetchUsers = async () => {
     try {
       setLoading(true);
-      const res = await axiosInstance.get("/answers/submition");
-      setData(res.data.data.data); // nested object অনুযায়ী
+      const res = await axiosInstance.get(
+        `/answers/submition?page=${
+          currentPage + 1
+        }&limit=${perPage}&searchTerm=${search}&fromDate=${fromDate}&toDate=${toDate}`
+      );
+      setData(res.data.data.data);
+      setMeta(res?.data?.data?.meta);
+      setSearch("");
+      setSearch("");
+      setFromDate("");
+      setToDate("");
     } catch (err: any) {
       console.error(err);
       setError("Failed to fetch users");
@@ -25,7 +51,46 @@ const Page = () => {
 
   useEffect(() => {
     fetchUsers();
-  }, []);
+  }, [currentPage]);
+
+  const generatePDF = (data: any[]) => {
+    if (!data.length) return;
+
+    const doc = new jsPDF();
+
+    // Title
+    doc.setFontSize(18);
+    doc.text("Survey Submissions", 14, 22);
+
+    // Headers
+    const headers = [
+      "Submit by",
+      "Survey user",
+      ...data[0].surveyResponse.map((resp: any) => resp.question.text),
+    ];
+
+    // Rows
+    const rows = data.map((d) => [
+      `${d.user.email} (${d.user.name})`,
+      d.name,
+      ...d.surveyResponse.map((resp: any) => resp.answerText || "-"),
+    ]);
+
+    // Add table using autoTable
+    autoTable(doc, {
+      head: [headers],
+      body: rows,
+      startY: 30,
+      styles: { fontSize: 10, cellPadding: 2 },
+      headStyles: { fillColor: [30, 144, 255] },
+    });
+
+    // Open PDF in new tab
+    doc.output("dataurlnewwindow");
+
+    // Download PDF (optional)
+    // doc.save("survey_submissions.pdf");
+  };
 
   if (loading) return <p>Loading...</p>;
   if (error) return <p className="text-red-500">{error}</p>;
@@ -33,34 +98,86 @@ const Page = () => {
   return (
     <div>
       <h2 className="text-xl font-bold mb-4">Submition</h2>
+      <div>
+        <button
+          onClick={() => generatePDF(data)}
+          className="bg-blue-600 text-white px-4 py-2 rounded mb-4"
+        >
+          View / Download PDF
+        </button>
+        <div className="max-w-full flex   mb-4 relative">
+          <div className="flex gap-2 mb-4 items-center">
+            <Input
+              type="date"
+              value={fromDate}
+              onChange={(e) => setFromDate(e.target.value)}
+              placeholder="From Date"
+            />
+            <Input
+              type="date"
+              value={toDate}
+              onChange={(e) => setToDate(e.target.value)}
+              placeholder="To Date"
+            />
+          </div>
+
+          <div className="flex">
+            <Input
+              className="w-62"
+              placeholder="Search..."
+              onChange={(e) => setSearch(e.target.value)}
+            />
+            <div
+              className="border h-fit bg-success bg-sky-600 p-1 rounded-sm text-white"
+              onClick={() => fetchUsers()}
+            >
+              Search
+            </div>
+          </div>
+        </div>
+      </div>
+
       <div className="overflow-x-auto mt-5">
         <table className="min-w-full bg-white/95 backdrop-blur-sm shadow-md rounded-2xl border-collapse">
           <thead>
-            <tr className="bg-gray-100 text-gray-700">
-              <th className="py-3 px-5 text-left font-semibold">Submit by</th>
-              <th className="py-3 px-5 text-left font-semibold">Survey user</th>
-              <th className="py-3 px-5 text-left font-semibold">Action</th>
+            <tr>
+              <th className="py-3 px-5">No</th>
+              <th className="py-3 px-5">Date</th>
+              <th className="py-3 px-5">Submit by</th>
+              <th className="py-3 px-5">Survey user</th>
+              {data[0]?.surveyResponse?.map((resp: any) => (
+                <th key={resp.id} className="py-3 px-5">
+                  {resp.question.text}
+                </th>
+              ))}
             </tr>
           </thead>
           <tbody>
-            {data.map((d) => (
-              <tr
-                key={d.id}
-                className="border-b last:border-b-0 hover:bg-gray-50 transition-all duration-200 cursor-pointer"
-                onClick={() => setSelectedCollection(d)}
-              >
+            {data.map((d, i) => (
+              <tr key={d.id} className="border-b">
+                <td className="py-3 px-5">{i + 1}</td>
+                <td className="py-3 px-5">{formatData(d.createdAt)}</td>
+
                 <td className="py-3 px-5">
-                  {d.user.email} <br />
-                  {d.user.name}
+                  {d.user.email} <br /> {d.user.name}
                 </td>
                 <td className="py-3 px-5">{d.name}</td>
-                <td className="py-3 px-5 text-blue-500 underline">
-                  View Answers
-                </td>
+                {d.surveyResponse?.map((resp: any) => (
+                  <td key={resp.id} className="py-3 px-5">
+                    {resp.answerText || "-"}
+                  </td>
+                ))}
               </tr>
             ))}
           </tbody>
         </table>
+      </div>
+      <div className="my-4">
+        <PaginationButtons
+          totalPages={Math?.ceil(meta?.total / perPage)}
+          currentPage={currentPage}
+          setCurrentPage={setCurrentPage}
+        />
       </div>
 
       {/* Modal */}

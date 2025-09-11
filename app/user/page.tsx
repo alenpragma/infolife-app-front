@@ -43,13 +43,13 @@ export default function DashboardPage() {
 
             <div className="flex-1 min-w-0">
               <h2 className="font-bold text-lg sm:text-xl text-gray-800 mb-1 truncate">
-                {data.name}
+                {data?.name}
               </h2>
               <p className="text-xs sm:text-sm text-gray-600 flex items-center mb-1">
-                <span className="mr-2 text-blue-500">👤</span> {data.role}
+                <span className="mr-2 text-blue-500">👤</span> {data?.position}
               </p>
               <p className="text-xs sm:text-sm text-gray-600 flex items-center">
-                <span className="mr-2 text-green-500">📍</span> {data.location}
+                <span className="mr-2 text-green-500">📍</span> {data?.location}
               </p>
             </div>
           </div>

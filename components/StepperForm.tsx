@@ -341,10 +341,11 @@ export const StepperForm = () => {
             shape[f.name] = z.coerce.date().optional().or(z.literal(null));
             break;
           case "SELECT_GROUP":
-            shape[f.name] = "";
-            break;
-          case "SELECT":
-            shape[f.name] = "";
+            if (shouldBeRequired) {
+              shape[f.name] = z.string().min(1, `${f.label} is required`);
+            } else {
+              shape[f.name] = z.string().optional().or(z.literal(""));
+            }
             break;
         }
       }
@@ -358,11 +359,7 @@ export const StepperForm = () => {
 
     const isRequired = isFieldRequired(field, values);
     let filteredOptions = field.options || [];
-    if (
-      field.type === "SELECT_GROUP" &&
-      field.dependsOnQuestionId &&
-      !field.dependsOnValue
-    ) {
+    if (field.type === "SELECT_GROUP" && field.dependsOnQuestionId) {
       const parentValue = values[field.dependsOnQuestionId];
 
       filteredOptions = field.options.filter(
@@ -407,7 +404,7 @@ export const StepperForm = () => {
               return (
                 <SelectField
                   name={field.name}
-                  options={filteredOptions}
+                  options={field.options}
                   required={isRequired}
                   className="w-full min-w-96"
                 />

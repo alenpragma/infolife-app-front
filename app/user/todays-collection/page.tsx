@@ -27,7 +27,7 @@ export default function page() {
   const queryClient = useQueryClient();
   const [selectedCollection, setSelectedCollection] = useState<any>(null);
 
-  const { data, isLoading, error } = useGetData<any>(
+  const { data, isLoading, refetch, error } = useGetData<any>(
     ["my-submition-today"],
     "/answers/my-submition?day=true"
   );
@@ -44,6 +44,7 @@ export default function page() {
       queryClient.invalidateQueries({
         queryKey: ["my-submition-today"],
       });
+      refetch();
     },
     onError: (err: AxiosError<{ message: string }>) => {
       showErrorAlert(err?.message || "Login failed.");
