@@ -4,10 +4,11 @@ import PaginationButtons from "@/components/PaginationButtons";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import axiosInstance from "@/lib/axiosConfig/axiosConfig";
+import { url2 } from "@/lib/utils";
 import "jspdf-autotable";
 import { X } from "lucide-react";
 import { useEffect, useState } from "react";
-import DownloadTableCSV from "./DownloadTableCSV";
+// import { DownloadTablePdf } from "./DownloadTableCSV";
 
 const Page = () => {
   const [data, setData] = useState<any[]>([]);
@@ -55,18 +56,48 @@ const Page = () => {
   if (loading) return <p>Loading...</p>;
   if (error) return <p className="text-red-500">{error}</p>;
 
+  // PDF ডাউনলোড
+  const downloadPDF = async () => {
+    const response = await fetch(
+      `${url2}/pdf?page=${
+        currentPage + 1
+      }&limit=${perPage}&searchTerm=${search}&fromDate=${fromDate}&toDate=${toDate}`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          id: "123",
+          name: "বাংলা নাম",
+          details: "এই ডাটা PDF আকারে দেখানো হবে",
+        }),
+      }
+    );
+
+    if (!response.ok) throw new Error("PDF download failed");
+
+    const blob = await response.blob();
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "data-123.pdf";
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    window.URL.revokeObjectURL(url);
+  };
+
   return (
     <div>
       <h2 className="text-xl font-bold mb-4">Submition</h2>
       <div>
-        {/* <button
-          // onClick={() => downloadTablePDF(data)}
+        <button
+          onClick={() => downloadPDF()}
           className="bg-blue-600 text-white px-4 py-2 rounded mb-4"
         >
           Download PDF
-        </button> */}
+        </button>
 
-        <DownloadTableCSV data={data} />
+        {/* <DownloadTablePdf data={data} /> */}
         <div className="max-w-full flex   mb-4 relative">
           <div className="flex gap-2 mb-4 items-center">
             <Input
@@ -109,7 +140,7 @@ const Page = () => {
               <th className="py-3 text-left">Guardian Name</th>
               <th className="py-3 text-left">Mobile</th>
               <th className="py-3 text-left">Alternative Mobile</th>
-              <th className="py-3 text-left">upazila</th>
+              <th className="py-3 text-left">Upazila</th>
               <th className="py-3 text-left">Area</th>
               <th className="py-3 text-left">More</th>
             </tr>
