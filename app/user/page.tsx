@@ -57,53 +57,64 @@ export default function DashboardPage() {
       </div>
 
       <div className="p-3 sm:p-4 grid grid-cols-2 sm:grid-cols-2 gap-3 sm:gap-4 relative z-10">
+        {/* নতুন ফরম */}
         <Link href="/user/new-form">
-          <Card className="p-6 sm:p-8 bg-white/95 backdrop-blur-sm shadow-sm hover:shadow-sm transition-all duration-300 cursor-pointer rounded-md border-0 transform ">
+          <Card className="group p-6 sm:p-8 bg-white/95 backdrop-blur-sm shadow-md hover:shadow-lg transition-all duration-300 cursor-pointer rounded-xl border border-gray-100 hover:-translate-y-1">
             <div className="text-center">
-              <div className="w-14 h-14 sm:w-16 sm:h-16 bg-gradient-to-br from-blue-500 to-blue-600 rounded-md flex items-center justify-center mx-auto mb-3 sm:mb-4 shadow-sm">
+              <div className="w-14 h-14 sm:w-16 sm:h-16 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center mx-auto mb-3 sm:mb-4 shadow-sm">
                 <FileText className="w-7 h-7 sm:w-8 sm:h-8 text-white" />
               </div>
-              <p className="font-semibold text-gray-800 text-base sm:text-lg">
+              <p className="font-semibold pb-6 text-gray-800 text-base sm:text-lg">
                 নতুন ফরম
               </p>
             </div>
           </Card>
         </Link>
 
+        {/* আজকের সংগ্রহ */}
         <Link href="/user/todays-collection">
-          <Card className="p-6 sm:p-8 bg-white/95 backdrop-blur-sm shadow-sm hover:shadow-sm transition-all duration-300 cursor-pointer rounded-md border-0 transform ">
+          <Card className="group p-6 sm:p-8 bg-white/95 backdrop-blur-sm shadow-md hover:shadow-lg transition-all duration-300 cursor-pointer rounded-xl border border-gray-100 hover:-translate-y-1">
             <div className="text-center">
-              <div className="w-14 h-14 sm:w-16 sm:h-16 bg-gradient-to-br from-green-500 to-green-600 rounded-md flex items-center justify-center mx-auto mb-3 sm:mb-4 shadow-sm">
+              <div className="w-14 h-14 sm:w-16 sm:h-16 bg-gradient-to-br from-green-500 to-green-600 rounded-xl flex items-center justify-center mx-auto mb-3 sm:mb-4 shadow-sm">
                 <Calendar className="w-7 h-7 sm:w-8 sm:h-8 text-white" />
               </div>
               <p className="font-semibold text-gray-800 text-base sm:text-lg">
                 আজকের সংগ্রহ
               </p>
-            </div>
-          </Card>
-        </Link>
-
-        <Link href="/user/all-forms">
-          <Card className="p-6 sm:p-8 bg-white/95 backdrop-blur-sm shadow-sm hover:shadow-sm transition-all duration-300 cursor-pointer rounded-md border-0 transform ">
-            <div className="text-center">
-              <div className="w-14 h-14 sm:w-16 sm:h-16 bg-gradient-to-br from-purple-500 to-purple-600 rounded-md flex items-center justify-center mx-auto mb-3 sm:mb-4 shadow-sm">
-                <List className="w-7 h-7 sm:w-8 sm:h-8 text-white" />
-              </div>
-              <p className="font-semibold text-gray-800 text-base sm:text-lg">
-                সব ফরম
+              <p className="mt-1 text-sm sm:text-base font-medium text-green-600">
+                {data?.today} টি
               </p>
             </div>
           </Card>
         </Link>
 
-        <Card className="p-6 sm:p-8 bg-white/95 backdrop-blur-sm shadow-sm hover:shadow-sm transition-all duration-300 cursor-pointer rounded-md border-0 transform ">
+        {/* সব ফরম */}
+        <Link href="/user/all-forms">
+          <Card className="group p-6 sm:p-8 bg-white/95 backdrop-blur-sm shadow-md hover:shadow-lg transition-all duration-300 cursor-pointer rounded-xl border border-gray-100 hover:-translate-y-1">
+            <div className="text-center">
+              <div className="w-14 h-14 sm:w-16 sm:h-16 bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl flex items-center justify-center mx-auto mb-3 sm:mb-4 shadow-sm">
+                <List className="w-7 h-7 sm:w-8 sm:h-8 text-white" />
+              </div>
+              <p className="font-semibold text-gray-800 text-base sm:text-lg">
+                সব ফরম
+              </p>
+              <p className="mt-1 text-sm sm:text-base font-medium text-purple-600">
+                {data?.total} টি
+              </p>
+            </div>
+          </Card>
+        </Link>
+
+        {/* তত্ত্ব পাঠন */}
+        <Card className="group p-6 sm:p-8 bg-white/95 backdrop-blur-sm shadow-md hover:shadow-lg transition-all duration-300 cursor-pointer rounded-xl border border-gray-100 hover:-translate-y-1">
           <div className="text-center">
-            <div className="w-14 h-14 sm:w-16 sm:h-16 bg-gradient-to-br from-orange-500 to-orange-600 rounded-md flex items-center justify-center mx-auto mb-3 sm:mb-4 shadow-sm">
+            <div className="w-14 h-14 sm:w-16 sm:h-16 bg-gradient-to-br from-orange-500 to-orange-600 rounded-xl flex items-center justify-center mx-auto mb-3 sm:mb-4 shadow-sm">
               <BookOpen className="w-7 h-7 sm:w-8 sm:h-8 text-white" />
             </div>
             <p className="font-semibold text-gray-800 text-base sm:text-lg">
               তত্ত্ব পাঠন
             </p>
+            <p className="mt-1 text-sm sm:text-base font-medium text-purple-600"></p>
           </div>
         </Card>
       </div>

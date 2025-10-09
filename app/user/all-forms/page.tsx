@@ -1,41 +1,27 @@
 "use client";
 
 import PaginationButtons from "@/components/PaginationButtons";
-import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import ViewModal from "@/components/ViewModal";
 import { useGetData } from "@/lib/axiosConfig/FetchData";
 import { formatData } from "@/lib/utils/formatData";
-import {
-  Calendar,
-  Download,
-  FileSpreadsheet,
-  FileText,
-  GraduationCap,
-  User,
-} from "lucide-react";
+import { Calendar, FileText, GraduationCap, User } from "lucide-react";
 import { useState } from "react";
 
 export default function AllFormsPage() {
   const [currentPage, setCurrentPage] = useState(0);
   let limit = 25;
+  const [startDate, setStartDate] = useState<string>(""); // YYYY-MM-DD
+  const [endDate, setEndDate] = useState<string>(""); // YYYY-MM-DD
 
   const { data, isLoading, error } = useGetData<any>(
-    ["my-submition", currentPage],
-    `/answers/my-submition?page=${currentPage + 1}&limit=${limit}`
+    ["my-submition", currentPage, startDate, endDate],
+    `/answers/my-submition?page=${currentPage + 1}&limit=${limit}${
+      startDate ? `&fromDate=${startDate}` : ""
+    }${endDate ? `&toDate=${endDate}` : ""}`
   );
 
-  const exportToExcel = () => {
-    // Mock export functionality
-    alert("এক্সেল ফাইল ডাউনলোড শুরু হচ্ছে...");
-  };
-
-  const exportToPDF = () => {
-    // Mock export functionality
-    alert("পিডিএফ ফাইল ডাউনলোড শুরু হচ্ছে...");
-  };
   const [selectedCollection, setSelectedCollection] = useState<any>(null);
-  console.log(selectedCollection);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-blue-100 relative">
@@ -51,38 +37,40 @@ export default function AllFormsPage() {
         ></div>
       </div>
 
-      <div className="p-4 relative z-10">
-        <div className="text-center mb-6">
-          <h1 className="text-2xl font-bold text-gray-800 mb-2">সব ফরম</h1>
-          <p className="text-gray-600">জমা দেওয়া সকল ফর্মের তালিকা</p>
-
-          <div className="mt-4 gap-4 max-w-sm mx-auto">
-            <div className="bg-white/80 backdrop-blur-sm rounded-md p-3 shadow-sm">
-              <div className="text-2xl font-bold text-blue-600">
-                {data?.data?.length}
-              </div>
-              <div className="text-xs text-gray-600">মোট ফর্ম</div>
-            </div>
-          </div>
-        </div>
-
-        {/* Added export buttons */}
-        <div className="flex flex-col sm:flex-row gap-2 sm:gap-4 mb-4">
-          <Button
-            onClick={exportToExcel}
-            className="flex-1 bg-green-600 hover:bg-green-700 text-white py-2 px-4 rounded-md shadow-sm transition-all duration-200 flex items-center justify-center gap-2"
+      <div className="mb-4 relative flex justify-center gap-2">
+        <input
+          type="date"
+          value={startDate}
+          max={endDate || undefined}
+          onChange={(e) => {
+            setStartDate(e.target.value);
+            setCurrentPage(0); // reset page
+          }}
+          className="border rounded px-2 py-1"
+        />
+        <input
+          type="date"
+          value={endDate}
+          min={startDate || undefined}
+          onChange={(e) => {
+            setEndDate(e.target.value);
+            setCurrentPage(0); // reset page
+          }}
+          className="border rounded px-2 py-1"
+        />
+        {/* ✅ Reset Button */}
+        {(startDate || endDate) && (
+          <button
+            onClick={() => {
+              setStartDate("");
+              setEndDate("");
+              setCurrentPage(0);
+            }}
+            className="bg-primary hover:bg-gray-300 text-gray-700 px-3 py-1 rounded transition"
           >
-            <FileSpreadsheet className="w-4 h-4" />
-            <span className="text-sm">এক্সেল এ রপ্তানি</span>
-          </Button>
-          <Button
-            onClick={exportToPDF}
-            className="flex-1 bg-red-600 hover:bg-red-700 text-white py-2 px-4 rounded-md shadow-sm transition-all duration-200 flex items-center justify-center gap-2"
-          >
-            <Download className="w-4 h-4" />
-            <span className="text-sm">পিডিএফ এ রপ্তানি</span>
-          </Button>
-        </div>
+            Reset
+          </button>
+        )}
       </div>
 
       {/* Forms List */}
@@ -108,12 +96,24 @@ export default function AllFormsPage() {
                 <div className="space-y-1">
                   <div className="flex items-center text-gray-600">
                     <User className="w-4 h-4 mr-2 text-blue-500 flex-shrink-0" />
-                    <span className="text-sm font-medium">{form.name}</span>
+                    <span className="text-sm font-medium">
+                      {
+                        form.answerData.find(
+                          (item: any) => item.questionText == "Guardian Name"
+                        )?.answer
+                      }
+                    </span>
                   </div>
 
                   <div className="flex items-center text-gray-600">
                     <GraduationCap className="w-4 h-4 mr-2 text-purple-500 flex-shrink-0" />
-                    <span className="text-sm">{form.name}</span>
+                    <span className="text-sm">
+                      {
+                        form.answerData.find(
+                          (item: any) => item.questionText == "Mobile"
+                        )?.answer
+                      }
+                    </span>
                   </div>
 
                   <div className="flex items-center text-gray-600">
