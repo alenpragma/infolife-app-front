@@ -106,17 +106,19 @@ export default function DashboardPage() {
         </Link>
 
         {/* তত্ত্ব পাঠন */}
-        <Card className="group p-6 sm:p-8 bg-white/95 backdrop-blur-sm shadow-md hover:shadow-lg transition-all duration-300 cursor-pointer rounded-xl border border-gray-100 hover:-translate-y-1">
-          <div className="text-center">
-            <div className="w-14 h-14 sm:w-16 sm:h-16 bg-gradient-to-br from-orange-500 to-orange-600 rounded-xl flex items-center justify-center mx-auto mb-3 sm:mb-4 shadow-sm">
-              <BookOpen className="w-7 h-7 sm:w-8 sm:h-8 text-white" />
+        <Link href="/user/save-message">
+          <Card className="group  p-6 sm:p-8 bg-white/95 backdrop-blur-sm shadow-md hover:shadow-lg transition-all duration-300 cursor-pointer rounded-xl border border-gray-100 hover:-translate-y-1">
+            <div className="text-center">
+              <div className="w-14 h-14 sm:w-16 sm:h-16 bg-gradient-to-br from-orange-500 to-orange-600 rounded-xl flex items-center justify-center mx-auto mb-3 sm:mb-4 shadow-sm">
+                <BookOpen className="w-7 h-7 sm:w-8 sm:h-8 text-white" />
+              </div>
+              <p className="font-semibold pb-6 text-gray-800 text-base sm:text-lg">
+                তত্ত্ব পাঠন
+              </p>
+              <p className="mt-1 text-sm sm:text-base font-medium text-purple-600"></p>
             </div>
-            <p className="font-semibold text-gray-800 text-base sm:text-lg">
-              তত্ত্ব পাঠন
-            </p>
-            <p className="mt-1 text-sm sm:text-base font-medium text-purple-600"></p>
-          </div>
-        </Card>
+          </Card>
+        </Link>
       </div>
 
       <ExitModal
