@@ -1,6 +1,7 @@
 "use client";
 
 import { ExitModal } from "@/components/exit-modal";
+import SavedData from "@/components/SavedData";
 import { Card } from "@/components/ui/card";
 import { useGetData } from "@/lib/axiosConfig/FetchData";
 import { BookOpen, Calendar, FileText, List } from "lucide-react";
@@ -120,7 +121,11 @@ export default function DashboardPage() {
           </Card>
         </Link>
       </div>
-
+      {
+        <div>
+          <SavedData />
+        </div>
+      }
       <ExitModal
         isOpen={showExitModal}
         onClose={() => setShowExitModal(false)}

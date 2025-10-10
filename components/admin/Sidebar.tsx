@@ -21,6 +21,8 @@ const Sidebar = ({ isOpen, setIsOpen }: SidebarProps) => {
     { label: "Add Questions", href: "/admin/add-questions" },
     { label: "Submitions", href: "/admin/submitions" },
     { label: "Location", href: "/admin/location" },
+
+    { label: "Campaign Feedback", href: "/admin/campaign-feedback" },
   ];
 
   const handleLogout = () => {
