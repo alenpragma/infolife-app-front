@@ -1,6 +1,7 @@
 "use client";
 
 import axiosInstance from "@/lib/axiosConfig/axiosConfig";
+import { Loader2 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
@@ -49,7 +50,13 @@ const AllUsersPage = () => {
     fetchUsers();
   }, []);
 
-  if (loading) return <p>Loading users...</p>;
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center h-[60vh]">
+        <Loader2 className="h-10 w-10 animate-spin text-gray-600" />
+      </div>
+    );
+  }
   if (error) return <p className="text-red-500">{error}</p>;
 
   return (

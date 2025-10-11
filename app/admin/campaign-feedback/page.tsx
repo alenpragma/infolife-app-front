@@ -71,7 +71,9 @@ const SaveDataPage = () => {
               key={item.id}
               className="p-4 shadow hover:shadow-md transition border cursor-pointer"
             >
-              <h3 className="font-semibold text-lg">Title: {item.title}</h3>
+              <h3 className="font-semibold text-lg">
+                User: {item?.user?.name}
+              </h3>
 
               <p className="text-sm text-gray-600 line-clamp-2 mb-1">
                 Location: {item.location}
@@ -111,25 +113,22 @@ const SaveDataPage = () => {
               )}
               {selected.createdBy && (
                 <p>
-                  <span className="font-medium">Created By:</span>{" "}
+                  <span className="font-medium">Date:</span>{" "}
                   {selected.createdBy}
                 </p>
               )}
-              <p>
-                <span className="font-medium">Created At:</span>{" "}
-                {new Date(selected.createdAt).toLocaleString()}
-              </p>
+
               {selected.updatedAt && (
                 <p>
                   <span className="font-medium">Updated At:</span>{" "}
                   {new Date(selected.updatedAt).toLocaleString()}
                 </p>
               )}
-              <hr className="my-3" />
+              {/* <hr className="my-3" />
               <p className="text-gray-600 font-medium">Raw JSON:</p>
               <pre className="bg-gray-100 p-2 rounded-md overflow-auto text-xs">
                 {JSON.stringify(selected, null, 2)}
-              </pre>
+              </pre> */}
             </div>
           ) : (
             <p>No data selected.</p>

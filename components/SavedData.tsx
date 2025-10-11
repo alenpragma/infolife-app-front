@@ -8,8 +8,9 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import axiosInstance from "@/lib/axiosConfig/axiosConfig";
-import { useEffect, useState } from "react";
+import { useGetData } from "@/lib/axiosConfig/FetchData";
+import { useState } from "react";
+import EditSurveyData from "./EditSurveyData";
 
 interface ISaveData {
   id: string;
@@ -22,36 +23,28 @@ interface ISaveData {
 }
 
 const SavedData = () => {
-  const [data, setData] = useState<ISaveData[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
   const [selected, setSelected] = useState<ISaveData | null>(null);
   const [open, setOpen] = useState(false);
+  const [openEdit, setOpenEdit] = useState(false);
 
-  const fetchData = async () => {
-    try {
-      setLoading(true);
-      const res = await axiosInstance.get("/save-date");
-      setData(res.data.data || []);
-    } catch (err: any) {
-      console.error(err);
-      setError("Failed to fetch data");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchData();
-  }, []);
+  const { data, isLoading, error } = useGetData<any>(
+    ["save-date"],
+    "/save-date"
+  );
 
   const handleView = (item: ISaveData) => {
     setSelected(item);
     setOpen(true);
   };
 
-  if (loading) return <p className="p-6 text-gray-600">Loading data...</p>;
-  if (error) return <p className="p-6 text-red-500">{error}</p>;
+  const handleEdit = (item: ISaveData) => {
+    setSelected(item);
+    setOpenEdit(true);
+  };
+  console.log(data, "data");
+
+  if (isLoading) return <p className="p-6 text-gray-600">Loading data...</p>;
+  // if (error) return <p className="p-6 text-red-500">{error}</p>;
 
   return (
     <div>
@@ -85,9 +78,14 @@ const SavedData = () => {
                 </p>
                 <div className="flex justify-between items-center text-sm text-gray-500">
                   <span>{new Date(item.createdAt).toLocaleDateString()}</span>
-                  <Button size="sm" onClick={() => handleView(item)}>
-                    View
-                  </Button>
+                  <div className="flex gap-2">
+                    <Button size="sm" onClick={() => handleView(item)}>
+                      View
+                    </Button>
+                    <Button size="sm" onClick={() => handleEdit(item)}>
+                      Edit
+                    </Button>
+                  </div>
                 </div>
               </Card>
             ))}
@@ -140,6 +138,14 @@ const SavedData = () => {
           </DialogContent>
         </Dialog>
       </div>
+
+      {openEdit && (
+        <EditSurveyData
+          open={openEdit}
+          setOpen={setOpenEdit}
+          selected={selected}
+        />
+      )}
     </div>
   );
 };

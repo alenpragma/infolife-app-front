@@ -9,6 +9,7 @@ import axiosInstance from "@/lib/axiosConfig/axiosConfig";
 import { useGetData } from "@/lib/axiosConfig/FetchData";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { AxiosError } from "axios";
+import { Loader2 } from "lucide-react";
 import Swal from "sweetalert2";
 
 type Question = {
@@ -62,8 +63,12 @@ export default function Page() {
     });
   };
 
-  if (isPending) {
-    return <p className="p-6">No questions found.</p>;
+  if (isLoading) {
+    return (
+      <div className="flex justify-center items-center h-[60vh]">
+        <Loader2 className="h-10 w-10 animate-spin text-gray-600" />
+      </div>
+    );
   }
 
   return (
