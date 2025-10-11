@@ -111,17 +111,11 @@ const SaveDataPage = () => {
                   {selected.description}
                 </p>
               )}
-              {selected.createdBy && (
+
+              {selected.createdAt && (
                 <p>
                   <span className="font-medium">Date:</span>{" "}
-                  {selected.createdBy}
-                </p>
-              )}
-
-              {selected.updatedAt && (
-                <p>
-                  <span className="font-medium">Updated At:</span>{" "}
-                  {new Date(selected.updatedAt).toLocaleString()}
+                  {new Date(selected.createdAt).toLocaleString()}
                 </p>
               )}
               {/* <hr className="my-3" />
