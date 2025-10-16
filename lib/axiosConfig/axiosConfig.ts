@@ -1,7 +1,7 @@
 import axios, { AxiosError } from "axios";
 
 import Cookies from "js-cookie";
-import { url } from "../utils";
+import { url } from "../api";
 import { handleLogout } from "../utils/useHandleLogout";
 
 export type IGenericErrorResponse = {

@@ -3,8 +3,8 @@
 import PaginationButtons from "@/components/PaginationButtons";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { url2 } from "@/lib/api";
 import axiosInstance from "@/lib/axiosConfig/axiosConfig";
-import { url2 } from "@/lib/utils";
 import "jspdf-autotable";
 import { X } from "lucide-react";
 import { useEffect, useState } from "react";
@@ -142,7 +142,8 @@ const Page = () => {
               <th className="py-3 text-left">Alternative Mobile</th>
               <th className="py-3 text-left">Upazila</th>
               <th className="py-3 text-left">Area</th>
-              <th className="py-3 text-left">More</th>
+              <th className="py-3 text-left">Status</th>
+              <th className="py-3 text-left">Action</th>
             </tr>
           </thead>
           <tbody>
@@ -169,6 +170,10 @@ const Page = () => {
                 (a: any) => a.question.text.trim() == "Area"
               );
 
+              const status = surveyResponse.find(
+                (a: any) => a.question.text.trim() == "Status"
+              );
+
               return (
                 <tr key={d.id} className="border-b">
                   <td className="py-3 text-left px-5">{i + 1}</td>
@@ -192,6 +197,10 @@ const Page = () => {
                   </td>
                   <td className="py-3 text-left px-5">
                     {area?.answerText || "-"}
+                  </td>
+
+                  <td className="py-3 text-left px-5">
+                    {status?.answerText || "-"}
                   </td>
                   <td className="py-3 text-left px-5">
                     <Button size="sm" onClick={() => setSelectedCollection(d)}>

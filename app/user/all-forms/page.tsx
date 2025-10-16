@@ -5,7 +5,13 @@ import { Card } from "@/components/ui/card";
 import ViewModal from "@/components/ViewModal";
 import { useGetData } from "@/lib/axiosConfig/FetchData";
 import { formatData } from "@/lib/utils/formatData";
-import { Calendar, FileText, GraduationCap, User } from "lucide-react";
+import {
+  Calendar,
+  FileText,
+  GitPullRequestArrow,
+  GraduationCap,
+  User,
+} from "lucide-react";
 import { useState } from "react";
 
 export default function AllFormsPage() {
@@ -112,6 +118,17 @@ export default function AllFormsPage() {
                         {
                           form?.answerData?.find(
                             (item: any) => item?.questionText == "Mobile"
+                          )?.answer
+                        }
+                      </span>
+                    </div>
+
+                    <div className="flex items-center text-gray-600">
+                      <GitPullRequestArrow className="w-4 h-4 mr-2 text-purple-500 flex-shrink-0" />
+                      <span className="text-sm">
+                        {
+                          form?.answerData?.find(
+                            (item: any) => item?.questionText == "Status"
                           )?.answer
                         }
                       </span>
