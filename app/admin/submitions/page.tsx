@@ -15,11 +15,13 @@ const Page = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [selectedCollection, setSelectedCollection] = useState<any>(null);
-  const [currentPage, setCurrentPage] = useState(0);
+  const [currentPage, setCurrentPage] = useState(1);
   const [perPage, setparePage] = useState(25);
   const [search, setSearch] = useState("");
   const [fromDate, setFromDate] = useState("");
   const [toDate, setToDate] = useState("");
+
+  console.log(currentPage, "currentPage");
 
   const [meta, setMeta] = useState({
     total: 1,
@@ -31,9 +33,7 @@ const Page = () => {
     try {
       setLoading(true);
       const res = await axiosInstance.get(
-        `/answers/submition?page=${
-          currentPage + 1
-        }&limit=${perPage}&searchTerm=${search}&fromDate=${fromDate}&toDate=${toDate}`
+        `/answers/submition?page=${currentPage}&limit=${perPage}&searchTerm=${search}&fromDate=${fromDate}&toDate=${toDate}`
       );
       setData(res.data.data.data);
       setMeta(res?.data?.data?.meta);
@@ -176,7 +176,10 @@ const Page = () => {
 
               return (
                 <tr key={d.id} className="border-b">
-                  <td className="py-3 text-left px-5">{i + 1}</td>
+                  <td className="py-3 text-left px-5">
+                    {(currentPage - 1) * perPage + (i + 1)}
+                  </td>
+
                   <td className="py-3 text-left px-5">
                     {new Date(d.createdAt).toLocaleDateString()}
                   </td>

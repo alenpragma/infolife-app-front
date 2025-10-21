@@ -7,7 +7,7 @@ const PaginationButtons = ({
   totalPages,
 }: any) => {
   const handlePageClick = ({ selected }: any) => {
-    setCurrentPage(selected);
+    setCurrentPage(selected + 1);
   };
 
   const showNextButton = currentPage !== totalPages - 1;
@@ -16,6 +16,7 @@ const PaginationButtons = ({
   return (
     <div>
       <ReactPaginate
+        forcePage={currentPage - 1} // 🟢 Add this line
         breakLabel={<span className="mr-0.5 lg:mr-4">...</span>}
         nextLabel={
           showNextButton ? (
@@ -35,7 +36,7 @@ const PaginationButtons = ({
           ) : null
         }
         containerClassName="flex items-center justify-center mt-8 mb-4"
-        pageClassName="block border text-xs md:text-md pageButton  border-solid border-bodydark1 flex items-center justify-center rounded-md mr-1 lg:mr-4"
+        pageClassName="block border cursor-pointer text-xs md:text-md pageButton  border-solid border-bodydark1 flex items-center justify-center rounded-md mr-1 lg:mr-4"
         activeClassName="bg-primary border-primary text-white"
         renderOnZeroPageCount={null}
       />
