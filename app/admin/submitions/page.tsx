@@ -53,11 +53,12 @@ const Page = () => {
     fetchUsers();
   }, [currentPage]);
 
-  if (loading) return <p>Loading...</p>;
   if (error) return <p className="text-red-500">{error}</p>;
 
   // PDF ডাউনলোড
   const downloadPDF = async () => {
+    const ids = data.map((item: any) => item.id);
+
     const response = await fetch(
       `${url2}/pdf?page=${
         currentPage + 1
@@ -66,9 +67,7 @@ const Page = () => {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          id: "123",
-          name: "বাংলা নাম",
-          details: "এই ডাটা PDF আকারে দেখানো হবে",
+          ids,
         }),
       }
     );
@@ -121,7 +120,7 @@ const Page = () => {
               onChange={(e) => setSearch(e.target.value)}
             />
             <div
-              className="border h-fit bg-success bg-sky-600 p-1 rounded-sm text-white"
+              className="mx-3 border h-fit bg-success bg-sky-600 p-1 rounded-sm text-white"
               onClick={() => fetchUsers()}
             >
               Search
